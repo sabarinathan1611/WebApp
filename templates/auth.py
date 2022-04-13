@@ -26,13 +26,13 @@ def logout():
 def sing_up():
     if request.method == 'POST':
         email = request.form.get('email')
-        firstname = request.form.get('first name')
+        UserName = request.form.get('UserName')
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
         if len(email) < 5:
             
             flash('Email must be greater than 4 characters and check the email address.',category='error')
-        elif len(firstname) > 12:
+        elif len(UserName) > 12:
              flash('Name must be less than 12 characters.',category='error')
         elif len(password1) < 8:
              flash('Passsword must be greater than 8 characters.',category='error')
