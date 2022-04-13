@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+body {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(308deg, #e729b4fe, #4346f2);
+}
+
+form {
+    box-shadow: 0 8px 32px 0 rgb(31 38 135 / 37%);
+    border-radius: 30px;
+    border-left: 1px solid rgba(255, 255, 255, .3);
+    border-top: 1px solid rgba(255, 255, 255, .3);
+    width: 25rem;
+    height: 28rem;
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.06)
+}
+
+h3 {
+    font-size: 50px;
+    text-align: center;
+    text-shadow: 2px 2px rgba(40, 39, 39, .2);
+    color: white;
+    margin-bottom: 5%;
+    opacity: .8;
+}
+
+label {
+    font-size: 20px;
+    color: white;
+    margin-left: 8%;
+    text-shadow: 2px 2px rgba(40, 39, 39, .2);
+    opacity: .8;
+}
+
+input {
+    width: 80%;
+    margin: 8% 8%;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: white;
+    border-bottom: 2px solid rgba(255, 255, 255, .3);
+    /* opacity: .9; */
+
+}
+
+.login {
+    opacity: .8;
+    width: 50%;
+    margin: 3% auto;
+    color: white;
+    font-size: 15px;
+    background: rgba(255, 255, 255, .3);
+    padding: 10px 30px;
+    border: none;
+    border-radius: 25px;
+    text-shadow: 2px 2px rgba(40, 39, 39, .2);
+
+}
+
+.login:hover {
+    box-shadow: 3px 3px 5px rgb(31 38 135 / 37%);
+}
+
+.nabar-toggler {
+    opacity: .5;
+    width: 100vh;
+    height: 85px;
+    background-color: rgba(59, 110, 153, 0.719);
+    top: 0;
+    position: absolute;
+}
+
+.navbar-contatiner {
+    display: flex;
+    align-items: center;
+    padding: 0px 50px;
+    bottom: 50%;
+    height: 100px;
+    overflow: hidden;
+}

@@ -1,0 +1,1 @@
+<!-- <script type="tect/javascript"  src="{{ url_for('ststic'),filenmae='filename.js' }}"></script> -->
