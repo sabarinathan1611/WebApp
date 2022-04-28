@@ -1,1 +1,2 @@
 <!-- <script type="tect/javascript"  src="{{ url_for('ststic'),filenmae='filename.js' }}"></script> -->
+generate_password_hash(password, method="pbkdf2:sha256", salt_length=8)
