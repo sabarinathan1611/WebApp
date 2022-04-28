@@ -1,15 +1,19 @@
-{% extends "base.html" %} {% block title %}SingUP {% endblock %}
+{% extends "base.html" %} {% block title %}SignUp {% endblock %}
 {% block content%}
 
-<form method="post">
+<form  action="/Verify" method="post">
   <h3 align="center"> Sign Up</h3>
   <div class="form-group">
     <label for="email">Email Address</label>
     <input type="email" class="form-control" id="email" name="email" placeholder="Enter the email address" />
   </div>
-  </div>
+
+
+
+
+
   <div class="form-group">
-    <label for="UserName">Name</label>
+    <label for="UserName">UserName</label>
     <input type="text" class="form-control" id="UserName" name="UserName" placeholder="Enter the UserName" />
 
   </div>
@@ -21,10 +25,21 @@
   <div class="form-group">
     <label for="password2">Password(confirm)</label>
     <input type="password" class="form-control" id="password2" name="password2" placeholder="Confirm password" />
+  </div>
+    <!-- <div class="form-group">
+      <label for="otp">OTP</label>
+      <input type="number" class="form-control" id="otp" name="otp" placeholder="Enter password" />
+  
+    </div> -->
 
-
+    <!-- <script>
+      console.log("hello")
+      function verify(){
+          
+         return window.location='/verify';
+      }</script> -->
     <br>
-    <button type="submit" class="btn btn-primary">submit </button>
+    <button  type="submit" class="btn btn-primary">submit </button>
 
 
 
