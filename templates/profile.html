@@ -1,0 +1,69 @@
+{% extends "base.html" %} {% block title %}Profile {% endblock %}
+{% block content%}
+  <style>
+    .profile_img{
+      width: 125px;
+      border-radius: 120px;
+    }
+  </style>
+
+        <div class="shadow p-3 mb-5 bg-body rounded">
+            <ul class="list-group list-group-flush" id="notes">
+               
+                <li class="list-group-item">
+               <h5>User Name:   {{current_user.user_name}}  </h5>
+               <h5>Bio: {{current_user.bio}}        </h5>
+               <h5>Full Name:   {{current_user.name}}       </h5>
+               
+                
+              </ul>
+
+              <ul class="list-group list-group-flush" id="notes">
+                
+               
+                <li class="list-group-item">
+                  
+                  <div>
+                  <img src="{{url_for('static', filename='images/'+images)}}"   class="profile_img" alt="img error">
+                  
+                  </div>
+            
+                 
+                </li>
+           
+              </ul>
+
+
+        </div>
+
+
+        <form action="/profile" method="post" enctype="multipart/form-data">
+
+          <strong> Edit Your Profile</strong>
+
+    
+
+          <div class="form-group">
+            <label for="Bio">Full Name</label>
+            <input  type="text" class="form-control"  name="Name" value="{{current_user.name}}" placeholder="Add your Name" />
+           </div>
+        
+          <div class="form-group">
+            <label for="Bio">Bio</label>
+            <input  type="text" class="form-control" id="Bio" name="Bio" value="{{current_user.bio}}" placeholder="Add your Bio" />
+           </div>
+
+
+          
+  
+         
+          <div class="form-group">
+            <label for="pic">Profile photo</label>
+            <input name="pic"  class="upload" type="file">
+            
+        </div>
+          <br>
+          <button  type="submit" class="btn btn-primary">Update </button>
+      </form>
+
+{% endblock %}

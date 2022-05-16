@@ -1,0 +1,35 @@
+{% extends "base.html" %}   {% block title%}
+Admin{%endblock%}
+
+{% block content %}
+<h1>  Hello..  Admin</h1>
+<div class="shadow p-3 mb-5 bg-body rounded">
+
+<ul class="list-group list-group-flush" id="user's">
+
+<li class="list-group-item">
+{% for user in user%}
+<strong>User id :{{user.id}}</strong>
+<strong>User name :{{user.user_name}}</strong>
+<strong>User name :{{user.email}}</strong>
+
+{% if  session["user_id"] == 1%}
+<button type="button" class="btn-close" onClick="deleteUser ( {{ user.id }} )">
+  <span aria-hidden="true">&times;</span>
+</button>
+
+{% endif %}
+</li>
+
+{% endfor %}
+
+</ul>
+</div>
+
+
+<script
+type="text/javascript"
+src="{{ url_for('static', filename='js/admin_del.js') }}"
+></script>
+
+{%endblock%}

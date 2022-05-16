@@ -30,9 +30,16 @@
       </button>
       <div class="collapse navbar-collapse" id="navbar">
         <div class="navbar-nav">
-          {% if user.is_authenticated %}
+          {% if "user_id" in session %}
+          
             <a class="nav-item nav-link" id="home" href="/">Home</a>
             <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
+            <a class="nav-item nav-link" id="profile" href="/profile">Profile</a>
+            <a class="nav-item nav-link" id="profile" href="/posts">Posts</a>
+  
+            {%if current_user.id == 1 %}
+            <a class="nav-item nav-link" id="profile" href="/admin">Admin</a>
+            {% endif %}
           {% else %}
             <a class="nav-item nav-link" id="login" href="/login">Login</a>
             <a class="nav-item nav-link" id="signUp" href="/sign-up">Sign Up</a>
@@ -92,10 +99,7 @@
     
     
     {% endblock %}</div>
-  <!-- <script
-  type="text/javascript"
-  src="{{ url_for('static', filename='index.js') }}"
-></script> -->
+ 
 
   {% endblock %}
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
@@ -107,7 +111,13 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
     crossorigin="anonymous"></script>
+  
 
+
+  <script
+  type="text/javascript"
+  src="{{ url_for('static', filename='js/del.js') }}"
+></script>
 
 
 
