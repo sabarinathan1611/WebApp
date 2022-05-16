@@ -1,2 +1,82 @@
 <!-- <script type="tect/javascript"  src="{{ url_for('ststic'),filenmae='filename.js' }}"></script> -->
 generate_password_hash(password, method="pbkdf2:sha256", salt_length=8)
+<link
+href="{{ url_for('static', filename='style.css') }}">
+
+
+
+
+<ul class="list-group list-group-flush" id="notes">
+    {% for image in images %}
+   
+    <li class="list-group-item">
+      
+      <div>
+      <img src="{{url_for('static', filename='images/'+image.img_name)}}"   alt="img error">
+      </div>
+      <button type="button" class="close" onClick="deleteImg ( {{ image.id }} )">
+        <span aria-hidden="true">&times;</span>
+      </button>
+     
+    </li>
+    {% endfor %}
+  </ul>
+
+
+
+  try:
+  id=user.id
+  img=Image.query.get(id)
+  name=img.img_name
+  path=   app.config['UPLOAD_FOLDER']+name
+  print("bakkka:  ",path)
+  photo_id=img.id
+  
+  img=Image.query.get(photo_id)
+
+  
+  if img:
+      if img.user_id ==user.id:
+          Img=img.id
+          db.session.delete(Img)
+          db.session.commit()
+          os.remove(path)
+except:
+pass
+ 
+
+
+
+if pic.filename == '':
+flash('No image selected for uploading')
+return redirect('/profile')
+
+
+
+
+if pic and allowed_file(pic.filename):
+
+    
+
+user_id=current_user.id
+
+filename = secure_filename(pic.filename)
+
+num=str(randint(00000000, 99999999))
+
+pic_name = str(uuid.uuid1()) + "_" + num+ "_" +filename       
+print("filename:",pic_name)
+
+pic.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name))
+
+mimetype=pic.mimetype
+print("MIMe: ",mimetype)
+
+photo=Image(mimetype=mimetype,img_name=pic_name,user_id=user_id)
+db.session.add(photo)
+db.session.commit()
+flash('Image added !',category='success')
+return redirect('/profile')
+
+else:
+flash('Allowed image types are - png, jpg, jpeg, gif')

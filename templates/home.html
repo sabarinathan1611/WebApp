@@ -1,19 +1,66 @@
-{% extends  "base.html" %} {% block title %} Login {% endblock %}
+{% extends  "base.html" %} {% block title %} HOME {% endblock %}
 {% block content%}
 
-{{name}}
+
+
+
+
+
+
+{% if "user_id" in session %}
+<h1>Hello {{session["user_id"]}}</h1>
+
+{% endif %}
+
+{% if "user_name" in session %}
+<h1>Hello {{session["user_name"]}}</h1>
+
+{% endif %}
+
+
+<div class="shadow p-3 mb-5 bg-body rounded">
+
+  <ul class="list-group list-group-flush" id="notes">
+    {% for note in notes %}
+    <li class="list-group-item">
+      
+      <strong>
+        
+        <p> <b>Your Post:</b> 
+          {{ note.data }}</p>
+      {% if note.poster.id == current_user.id%}
+      <button type="button" class="btn-close" onClick="deleteNote ( {{ note.id }} )">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+  </div>
+
 <form method="post">
   <textarea name="note" id="note" cols="30" rows="10" class="form-control" placeholder="Here you can  write your notes"></textarea>
 
-  <br/>
-  <br/>
-  <br/>
+
   <br/>
 <div ><button class="btn btn-primary">ADDNOTE</button></div>
+<br>
 
 </form>
 
 
+<!--ADD PHOTO--> 
+
+
+<form action="/upload" method="post" enctype="multipart/form-data">
+  
+
+  <input name="pic"  class="upload" type="file"> 
+  <label>caption..</label>
+  <textarea name="caption" id="caption" cols="30" rows="10" class="form-control" placeholder="write Caption.."></textarea>
+  
+  <div ><button class="btn btn-primary">ADDPIC</button></div>
+  </form>
 
 
 {% endblock %}
