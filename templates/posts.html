@@ -2,7 +2,13 @@
 {% block content%}
 <style>
   .profile_img{
-    width: 25vh; 
+    width: 50px;
+    height: 50px;
+    border-radius: 500px;
+  }
+  .post_image{
+    width: 500px;
+    height: 500px;
   }
 </style>
 
@@ -12,7 +18,7 @@
     {% for note in notes %}
     <li class="list-group-item">
       
-      <strong>User:{{note.poster.user_name}}</strong>
+      <strong> <img src="{{url_for('static', filename='images/'+note.poster.profile_pic)}}"   class="profile_img" alt="img error">{{note.poster.user_name}}</strong>
         
         <p> <b>Post:</b> 
           {{ note.data }}</p>
@@ -34,10 +40,10 @@
       {% for image in images %}
       <li class="list-group-item">
         
-        <strong>User:{{image.img_poster.user_name}}</strong>
+        <strong> <img src="{{url_for('static', filename='images/'+image.img_poster.profile_pic)}}"   class="profile_img" alt="img error"> {{image.img_poster.user_name}}</strong>
           
           <p> <b>Post:</b> 
-            <img src="{{url_for('static', filename='images/post/'+image.img_name)}}"   class="profile_img" alt="img error">
+            <img src="{{url_for('static', filename='images/post/'+image.img_name)}}"   class="post_image" alt="img error">
             <h1>caption:
               {{image.caption}}</h1>
           </p>

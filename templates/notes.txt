@@ -80,3 +80,61 @@ return redirect('/profile')
 
 else:
 flash('Allowed image types are - png, jpg, jpeg, gif')
+
+
+
+
+
+
+<div class="shadow p-3 mb-5 bg-body rounded">
+  <ul class="list-group list-group-flush" id="user's">
+    <li class="list-group-item">
+      {% for user in user %}
+
+      <strong>User id :{{user.id}}</strong>
+      <strong>User name :{{user.user_name}}</strong>
+      <strong>User Email :{{user.email}}</strong>
+
+      {% if user.admin == True%}
+      <strong>Admin</strong>
+      {% else %}
+      <div>
+        {% if session["user_id"] == 1%}
+        <button
+          type="button"
+          class="btn-Add"
+          onClick="add_Admin ( {{ user.id }} )"
+        >
+          Add Admin
+        </button>
+
+
+        {% endif %}
+        <button
+        type="button"
+        class="btn-close"
+        onClick="deleteUser ( {{ user.id }} )"
+      >
+
+      </button>
+      </div>
+
+      {% endif %}
+
+      <br />
+
+      {% if current_user.id == 1 %}
+      <button
+        type="button"
+        class="btn-close"
+        onClick="deleteUser ( {{ user.id }} )"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+
+      {% endif %}
+    </li>
+
+    {% endfor %}
+  </ul>
+</div>

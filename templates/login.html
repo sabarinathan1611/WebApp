@@ -1,42 +1,32 @@
-{% extends "base.html" %} {% block title %} Login {% endblock %}
-{% block content%}
+{% extends "base.html" %} {% block title %} Login {% endblock %} {% block
+content%}
 
-
-
-<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-
-
-
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/styles.css') }}"
+/>
 
 <form class="form1" method="post">
+  <h3>Login</h3>
+  <div class="form-group">
+    <label for="email">Email Address</label>
+    <input type="email" class="form-control" id="email" name="email" />
+  </div>
 
-    <h3> Login</h3>
-    <div class="form-group">
-        <label for="email">Email Address</label>
-        <input type="email" class="form-control" id="email" name="email" />
-    </div>
-
-
-    <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" class="form-control" id="password1" name="password1" />
-
-    </div>
-    <a class="singup_link" href="/new_password"> Forget password</a>
-    <br>
-    <button  type="submit" class="login">Login</button>
-
-    
-    
-
-
+  <div class="form-group">
+    <label for="password">Password</label>
+    <input
+      type="password"
+      class="form-control"
+      id="password1"
+      name="password1"
+    />
+  </div>
+  <a class="singup_link" href="/new_password"> Forget password</a>
+  <br />
+  <button type="submit" class="login">Login</button>
 </form>
 
-
-
-
-
-<style>
-</style> 
+<style></style>
 
 {% endblock %}
