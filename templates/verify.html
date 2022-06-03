@@ -1,15 +1,18 @@
-{% extends "base.html" %} {% block title %}Verify {% endblock %}
-{% block content%}
-    {{msg}}
-    <form action="/confirm" method="post">
-        <div class="form-group">
-            <label for="otp">OTP</label>
-            <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter OTP" />
-        
-        </div>
+{% extends "base.html" %} {% block title %}Verify {% endblock %} {% block
+content%} {{msg}}
+<form action="{{url_for('auth.confirm')}}" method="post">
+  <div class="form-group">
+    <label for="otp">OTP</label>
+    <input
+      type="text"
+      class="form-control"
+      id="otp"
+      name="otp"
+      placeholder="Enter OTP"
+    />
+  </div>
 
-          <br>
-          <button  type="submit" class="btn btn-primary">Verify </button>
-
-    </form>
+  <br />
+  <button type="submit" class="btn btn-primary">Verify</button>
+</form>
 {% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %} {% block title%} Search{%endblock%} {% block content
+%} {% if user %}
+
+<div class="shadow p-3 mb-5 bg-body rounded">
+  <ul class="list-group list-group-flush" id="user's">
+    <li class="list-group-item">
+      <strong>User id :{{user.id}}</strong>
+      <strong>User name :{{user.user_name}}</strong>
+      <strong>User Email :{{user.email}}</strong>
+      {% if current_user.admin == True%}
+      <button
+        type="button"
+        class="btn-close"
+        onClick="deleteUser ( {{ user.id }} )"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+
+      {% endif %} {% if user.admin == True%}
+      <strong>Admin</strong>
+      {% else %}
+      <div>
+        {% if session["user_id"] == 1%}
+        <button
+          type="button"
+          class="btn-Add"
+          onClick="add_Admin ( {{ user.id }} )"
+        >
+          Add Admin
+        </button>
+
+        {% endif %}
+      </div>
+
+      {% endif %}
+    </li>
+  </ul>
+</div>
+{%endif%}
+<script
+  type="text/javascript"
+  src="{{ url_for('static', filename='js/admin_del.js') }}"
+></script>
+
+{%endblock%}
