@@ -1,45 +1,85 @@
-{% extends "base.html" %} {% block title%} Search{%endblock%} {% block content
-%} {% if user %}
-
-<div class="shadow p-3 mb-5 bg-body rounded">
-  <ul class="list-group list-group-flush" id="user's">
-    <li class="list-group-item">
-      <strong>User id :{{user.id}}</strong>
-      <strong>User name :{{user.user_name}}</strong>
-      <strong>User Email :{{user.email}}</strong>
-      {% if current_user.admin == True%}
-      <button
-        type="button"
-        class="btn-close"
-        onClick="deleteUser ( {{ user.id }} )"
-      >
-        <span aria-hidden="true">&times;</span>
-      </button>
-
-      {% endif %} {% if user.admin == True%}
-      <strong>Admin</strong>
+{% extends "base.html" %} {% block title%} Search{%endblock%} 
+{% block content%}
+<br/>
+<table class="table table-dark table-striped">
+  <tr>
+    <td>id</td>
+    <td>UserName</td>
+    <td>Email</td>
+    <td>Name</td>
+    <td>Deleteuser</td>
+    {% if session["user_id"] == 1%}
+        <td>Add Admin</td>
+    {% endif %}
+  </tr>
+  <tr>
+    
+    <td>{{user.id}}</td>
+    <td>{{user.user_name}}</td>
+    <td>{{user.email}}</td>
+    <td>{{user.name}}</td>
+    <td> 
+      {% if user.admin == True%}
+            <strong>You con't delete this ID</strong>
       {% else %}
-      <div>
-        {% if session["user_id"] == 1%}
-        <button
-          type="button"
-          class="btn-Add"
-          onClick="add_Admin ( {{ user.id }} )"
-        >
-          Add Admin
-        </button>
+        <div>
 
-        {% endif %}
-      </div>
+          <button
+          type="button"
+          class="btn-add"
+          onClick="deleteUser ( {{ user.id }} )"
+          >
+            Delete
+
+          </button>
+        </div>
 
       {% endif %}
-    </li>
-  </ul>
-</div>
-{%endif%}
+</td>
+
+      {%if current_user.id == 1%}
+         <td>
+         {% if session["user_id"] == 1%}
+              {% if user.admin == True%}
+                {% if user.id == 1%}
+                Admin
+                {% else %}
+                <button
+                type="button"
+                class="btn-Add"
+                onClick="removeAdmin ( {{ user.id }} )"
+                >
+                Remove Admin
+                </button>
+                {%endif%}
+             
+              {% else %}
+                  <button
+                  type="button"
+                  class="btn-Add"
+                  onClick="add_Admin ( {{ user.id }} )"
+                  >
+                  Add Admin
+                  </button>
+              {%endif%}
+      
+          {% endif %}
+    </td>
+      {%endif%}
+        
+    </tr>
+
+
+
+
+
+
+
+
+
 <script
   type="text/javascript"
-  src="{{ url_for('static', filename='js/admin_del.js') }}"
+  src="{{ url_for('static', filename='js/Admin.js') }}"
 ></script>
 
 {%endblock%}
