@@ -32,7 +32,18 @@
         <strong> <img src="{{url_for('static', filename='images/'+note.poster.profile_pic)}}"   class="profile_img" alt="img error">{{note.poster.user_name}}</strong>
         
         <p> <b>Your Post:</b> 
-          {{ note.data }}</p>
+          {{ note.post }}</p>
+
+          {{note.likes |length}}
+         
+
+
+          {%if current_user.id in note.likes|map(attribute="user_id")|list%}
+          <a href="#"onClick="like ( {{ note.id }} )"  role="button" data-bs-toggle="button"><i class="fa-solid fa-thumbs-up" ></i></a>
+          {%else%}
+          <a href="#"onClick="like ( {{ note.id }} )"  role="button" data-bs-toggle="button"><i class="fa-regular fa-thumbs-up"></i></a>
+          
+          {%endif%}
       {% if note.poster.id == current_user.id%}
       <button type="button" class="btn-close" onClick="deleteNote ( {{ note.id }} )">
         <span aria-hidden="true">&times;</span>
@@ -58,6 +69,18 @@
             <h1>caption:
               {{image.caption}}</h1>
           </p>
+          <div class="Like">
+            {{image.likes |length}}
+           
+  
+  
+            {%if current_user.id in image.likes|map(attribute="user_id")|list%}
+            <a href="#"onClick=" img_like ( {{ image.id }} )"  role="button" data-bs-toggle="button"><i class="fa-solid fa-thumbs-up" ></i></a
+            {%else%}
+            <a href="#"onClick=" img_like ( {{ image.id }} )"  role="button" data-bs-toggle="button"><i class="fa-regular fa-thumbs-up"></i></a
+            
+            {%endif%}
+          </div>
         {% if image.img_poster.id == session["user_id"] or session["user_id"] == 1%}
         <button type="button" class="close" onClick="deleteImg ( {{ image.id }} )">
           <span aria-hidden="true">&times;</span>

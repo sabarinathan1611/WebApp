@@ -20,3 +20,10 @@ function deleteNote(noteId) {
       window.location.href = "/posts";
     });
   }
+
+
+function Remove_Profile(){
+  window.location.href = "/remove_Profile_photo";
+
+}
+

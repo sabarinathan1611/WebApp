@@ -9,7 +9,8 @@ import uuid
 from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
 from flask_login import login_required, current_user
 from flask import session
-from .models import Image, User, Note
+from requests import post
+from .models import Image, Image_like, User, Note,Post_like
 from . import db
 from . import create_app
 from werkzeug.utils import secure_filename  #for secure file
@@ -46,13 +47,16 @@ def home():
         if id == int(userId):
             user = current_user
             session["user_name"] = user.user_name
+            print(   session["Otp"])
+       
+
 
             if request.method == 'POST':
                 note = request.form.get('note')
                 if len(note) < 1:
                     flash('Note is too short!', category='error')
                 else:
-                    new_note = Note(data=note, user_id=user.id)
+                    new_note = Note(post=note, user_id=user.id)
                     db.session.add(new_note)
                     db.session.commit()
                     flash('NOTE created!', category='success')
@@ -74,12 +78,58 @@ def posts():
     # session["images"]=Image.query.order_by(Image.date)
 
     return render_template('posts.html', notes=notes, images=images)
+#like
+@views.route("/like-post",methods=['POST','GET'])
+@login_required
+def post_like():
+    note = json.loads(request.data)
+    post_id = note['noteId']
+    
+    post =Note.query.filter_by(id=post_id).first()
+    like=  Post_like.query.filter_by(user_id=current_user.id,post_id=post_id).first()
+    print("work1")
+    if not post:
+        flash("post does not exist",category='error')
+        
+    elif like:
+        print(like)
+        db.session.delete(like)
+        db.session.commit()
+    else:
+        print("work3")
+        like= Post_like(user_id=current_user.id,post_id=post_id)
+        db.session.add(like)
+        db.session.commit()
+        
+    return redirect(url_for('views.posts')) 
+
+
+
+
+#img Post Like /img_post-like
+@views.route('/img_post-like', methods=['GET', 'POST'])
+def img_post_like():
+    img = json.loads(request.data)
+    img_id= img["imgId"]
+    image = Image.query.filter_by(id=img_id).first()
+    like=Image_like.query.filter_by(user_id=current_user.id,post_id=img_id).first()
+    
+    if not image:
+        flash("post does not exist",category='error')
+    elif like:
+        db.session.delete(like)
+        db.session.commit()
+    else:
+        like= Image_like(post_id=img_id,user_id=current_user.id)
+        db.session.add(like)
+        db.session.commit()
 
 
 #my post
 @views.route('/my_post', methods=['GET', 'POST'])
 @login_required
 def my_post():
+    
     image = current_user.images
     note = current_user.notes
     return render_template('my_post.html', notes=note, images=image)
@@ -216,9 +266,6 @@ def delete_note():
         if note.user_id == current_user.id or session["user_id"] == 1:
             db.session.delete(note)
             db.session.commit()
-            # return redirect(url_for('views.posts'))
-
-    # return jsonify({})
     return redirect('/posts')
 
 
@@ -244,26 +291,31 @@ def delete_img():
 
     return redirect('/posts')
 
+#Remove Profile
+@views.route('/remove_Profile_photo', methods=['POST', 'GET'])
+@login_required
+def remove_Profile_photo ():
+    if current_user.profile_pic == 'Default/Default.jpeg':
+
+        return redirect('/profile')
+    
+    else:
+        path = app.config['UPLOAD_FOLDER'] + current_user.profile_pic
+        current_user.profile_pic='Default/Default.jpeg'
+        db.session.commit()
+        os.remove(path)
+        return redirect('/profile')
+    
+
 
 #admin
 @views.route('/admin', methods=['POST', 'GET'])
 @login_required
 def admin():
-
-    # num = 1
-
-    # if num == 1:
-    #     user=User.query.order_by(User.date)
-    #     admin=Admin.query.order_by(Admin.date)
-
-    #     return render_template("Admin.html",user=user,admin=admin)
-    # else:
-    #     flash("User muste be a admin for access this page")
-    #     return redirect('/')
-
-    if current_user.admin == True:
+    if current_user.admin == True or current_user.id==1:
         user = User.query.order_by(User.date)
-        # admin=Admin.query.order_by(Admin.date)
+        session["Otp"]=None
+        print(session["Otp"])
         return render_template("Admin.html", user=user)
     else:
         flash("User muste be a admin for access this page")
@@ -280,6 +332,19 @@ def add_admin():
 
         # new_admin = Admin(email = user.email, password=user.password)
         user.admin = True
+
+        db.session.commit()
+        return redirect('/admin')
+
+@views.route('remove_admin',methods=['POST'])
+def remove_admin():
+    user = json.loads(request.data)
+    userID = user['userId']
+    user = User.query.get(userID)
+    if user.admin == True:
+
+        # new_admin = Admin(email = user.email, password=user.password)
+        user.admin = False
 
         db.session.commit()
         return redirect('/admin')

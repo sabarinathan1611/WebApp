@@ -26,9 +26,15 @@ content%}
           alt="img error"
         />
       </div>
+      
     </li>
   </ul>
+
 </div>
+<div class,="remove_Profile_photo">
+<button  class="btn btn-primary" onclick="Remove_Profile()" data-bs-toggle="button">Remove Profile</button>
+</div>
+
 
 <form action="/profile" method="post" enctype="multipart/form-data">
   <strong> Edit Your Profile</strong>
@@ -60,6 +66,8 @@ content%}
     <label for="pic">Profile photo</label>
     <input name="pic" class="upload" type="file" />
   </div>
+
+  
   <br />
   <button type="submit" class="btn btn-primary">Update</button>
 </form>

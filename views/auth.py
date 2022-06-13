@@ -76,7 +76,8 @@ def verfiy():
         user_name = request.form.get('UserName')
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
-        print("email:", email)
+        gender = request.form.get('gender')
+        print("email:", gender)
 
         #checking UserName and Email from Database
         user = User.query.filter_by(email=email).first()
@@ -111,6 +112,11 @@ def verfiy():
         elif password1 != password2:
             flash('password don\'t macth.', category='error')
             return render_template('sign_up.html')
+        elif gender == None:
+            flash(
+                'Select Your Gender',
+                category='error')
+            return render_template('sign_up.html')
 
         else:
 
@@ -127,6 +133,8 @@ def verfiy():
             session["Name"] = user_name
 
             session["Password"] = password1
+            
+            session["gender"] = gender
 
             # send otp mail to user mail
             try:
@@ -172,6 +180,7 @@ def confirm():
         user_name = session["Name"]
         print("Confirm MAil page=", email)
         password1 = session["Password"]
+        gender =session["gender"]
 
         try:
             int_otp = int(User_Otp)
@@ -181,17 +190,24 @@ def confirm():
 
         OTp = session["Otp"]
         if OTp == int_otp:
+            
+            
 
             new_user = User(email=email,
                             user_name=user_name,
+                            gender =gender,
+                            # admin= True,
                             password=(generate_password_hash(password1)))
             db.session.add(new_user)
             db.session.commit()
 
-            session.pop(session["Otp"], None)
-            session.pop(session["email"], None)
-            session.pop(session["Name"], None)
-            session.pop(session["Password"], None)
+            session["Otp"]  = None
+            session["email"] = None
+            session["Name"] = None
+            session["Password"] = None
+            session["gender"] = None
+            
+            
 
             flash('Account created!', category='success')
 

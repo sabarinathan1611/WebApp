@@ -24,7 +24,7 @@
     <td>Name</td>
     <td>Deleteuser</td>
     {% if session["user_id"] == 1%}
-    <td>Add Admin</td>
+        <td>Add Admin</td>
     {% endif %}
   </tr>
   {% for user in user %}
@@ -34,43 +34,61 @@
     <td>{{user.user_name}}</td>
     <td>{{user.email}}</td>
     <td>{{user.name}}</td>
-    <td> {% if user.admin == True%}
-      <strong>You con't delete this ID</strong>
+    <td> 
+      {% if user.admin == True%}
+            <strong>You con't delete this ID</strong>
       {% else %}
-      <div>
+        <div>
 
-        <button
-        type="button"
-        class="btn-add"
-        onClick="deleteUser ( {{ user.id }} )"
-      >
-      Delete
+          <button
+          type="button"
+          class="btn btn-danger"
+          onClick="deleteUser ( {{ user.id }} )"
+          >
+            Delete
 
-      </button>
-      </div>
+          </button>
+        </div>
 
       {% endif %}
 </td>
-{%if current_user.id == 1%}
-<td>
-  {% if session["user_id"] == 1%}
-  {% if user.admin == True%}
-  <strong>Admin</strong>
-      {% else %}
-      <button
-    type="button"
-    class="btn-Add"
-    onClick="add_Admin ( {{ user.id }} )"
-  >
-    Add Admin
-  </button>
-  {%endif%}
-  
-  {% endif %}
-</td>
-{%endif%}
-    
-  </tr>
+
+      {%if current_user.id == 1%}
+         <td>
+         {% if session["user_id"] == 1%}
+              {% if user.admin == True%}
+                {% if user.id == 1%}
+                Admin
+                {% else %}
+                <button
+                type="button"
+                class="btn btn-warning"
+                onClick="removeAdmin ( {{ user.id }} )"
+                >
+                Remove Admin
+                </button>
+                {%endif%}
+             
+              {% else %}
+                  <button
+                  type="button"
+                  class="btn btn-warning"
+                  onClick="add_Admin ( {{ user.id }} )"
+                  >
+                  Add Admin
+                  </button>
+              {%endif%}
+      
+          {% endif %}
+    </td>
+      {%endif%}
+
+      
+
+
+
+        
+      </tr>
   {%endfor%}
 </table>
 
@@ -81,13 +99,10 @@
 
 
 
+
 <script
   type="text/javascript"
-  src="{{ url_for('static', filename='js/admin_del.js') }}"
-></script>
-<script
-  type="text/javascript"
-  src="{{ url_for('static', filename='js/Add_Admin.js') }}"
+  src="{{ url_for('static', filename='js/Admin.js') }}"
 ></script>
 
 {%endblock%}
