@@ -6,18 +6,38 @@
     <td>id</td>
     <td>UserName</td>
     <td>Email</td>
+    <td>Gender</td>
     <td>Name</td>
+    <td>Edit</td>
     <td>Deleteuser</td>
     {% if session["user_id"] == 1%}
         <td>Add Admin</td>
     {% endif %}
   </tr>
+  
   <tr>
     
     <td>{{user.id}}</td>
     <td>{{user.user_name}}</td>
     <td>{{user.email}}</td>
+    <td>{{user.gender}}</td>
     <td>{{user.name}}</td>
+    <td> 
+      {% if current_user.id == 1%}
+      <div>
+
+        <a class="btn btn-warning"  href = "{{url_for('views.edit_user',id=user.id)}}">Edit</a>
+      </div>
+      {% elif user.id != 1 %}
+        <div>
+
+          <a class="btn btn-warning"  href = "{{url_for('views.edit_user',id=user.id)}}">Edit</a>
+        </div>
+        {%else%}
+        <strong>You con't Edit this ID</strong>
+
+      {% endif %}
+</td>
     <td> 
       {% if user.admin == True%}
             <strong>You con't delete this ID</strong>
@@ -26,7 +46,7 @@
 
           <button
           type="button"
-          class="btn-add"
+          class="btn btn-danger"
           onClick="deleteUser ( {{ user.id }} )"
           >
             Delete
@@ -46,7 +66,7 @@
                 {% else %}
                 <button
                 type="button"
-                class="btn-Add"
+                class="btn btn-warning"
                 onClick="removeAdmin ( {{ user.id }} )"
                 >
                 Remove Admin
@@ -56,7 +76,7 @@
               {% else %}
                   <button
                   type="button"
-                  class="btn-Add"
+                  class="btn btn-warning"
                   onClick="add_Admin ( {{ user.id }} )"
                   >
                   Add Admin
@@ -79,7 +99,7 @@
 
 <script
   type="text/javascript"
-  src="{{ url_for('static', filename='js/Admin.js') }}"
+  src="{{ url_for('static', filename='js/admin.js') }}"
 ></script>
 
 {%endblock%}

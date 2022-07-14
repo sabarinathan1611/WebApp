@@ -138,3 +138,92 @@ flash('Allowed image types are - png, jpg, jpeg, gif')
     {% endfor %}
   </ul>
 </div>
+
+
+
+
+
+
+
+
+<table class="table table-dark table-striped">
+  <tr>
+    <td>id</td>
+    <td>Name</td>
+    <td>Email</td>
+    {% if session["user_id"] == 1%}
+    <td>EditUser</td>
+    <td>DeleteUser</td>
+    <td>Add Admin</td>
+    {% endif %}
+  </tr>
+  {% for admin in admin %}
+
+  <tr>
+    <td>{{admin.id}}</td>
+    <td>{{admin.name}}</td>
+    <td>{{admin.email}}</td>
+    <td>
+      {% if current_user.id == 1%}
+      <div>
+        <a
+          class="btn btn-warning"
+          href="{{url_for('views.edit_user',id=user.id)}}"
+          >Edit</a
+        >
+      </div>
+      {%endif%}
+    </td>
+    <td>
+      {% if user.id == 1%}
+      <strong>You con't delete this ID</strong>
+      {% else %}
+      <div>
+        <button
+          type="button"
+          class="btn btn-danger"
+          onClick="deleteUser ( {{ user.id }} )"
+        >
+          Delete
+        </button>
+      </div>
+
+      {% endif %}
+    </td>
+
+    {%if current_user.id == 1%}
+    <td>
+      {%if admin == True%}
+      <button
+        type="button"
+        class="btn btn-warning"
+        onClick="removeAdmin ( {{ user.id }} )"
+      >
+        Remove Admin
+      </button>
+      {%else%}
+      <button
+        type="button"
+        class="btn btn-warning"
+        onClick="add_Admin ( {{ user.id }} )"
+      >
+        Add Admin
+      </button>
+      {%endif%}
+    </td>
+    {%endif%}
+  </tr>
+
+  {%endfor%}
+</table>
+
+
+
+
+
+
+A=["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M","N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+
+a="a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"
+
+

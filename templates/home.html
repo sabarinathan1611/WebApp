@@ -1,46 +1,111 @@
-{% extends "base.html" %} {% block title %} HOME {% endblock %} {% block
-content%} {% if "user_id" in session %}
-<h1>Hello {{session["user_id"]}}</h1>
+{% extends "base.html" %} {% block title %} HOME {% endblock %} {% block content%}
+<link href="https://cdn.jsdelivr.net/npm/froala-editor@3.1.0/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
 
-{% endif %} {% if "user_name" in session %}
-<h1>Hello {{session["user_name"]}}</h1>
 
-{% endif %}
+<style>
+  .profile_img {
+    width: 50px;
+    height: 50px;
+    border-radius: 500px;
+  }
 
-<form method="post">
-  <textarea
-    name="note"
-    id="note"
-    cols="30"
-    rows="10"
-    class="form-control"
-    placeholder="Here you can  write your notes"
-  ></textarea>
+  .post_image {
+    width: 500px;
+    height: 500px;
+  }
+</style>
 
-  <br />
-  <div><button class="btn btn-primary">ADDNOTE</button></div>
-  <br />
-</form>
+<div class="shadow-lg p-3 mb-5 bg-body rounded">
+{{session["admin_login{{current_user.id}}"]}}
+{{current_user.id}}
+  <ul class="list-group list-group-flush" id="notes">
+    {% for note in notes %}
+    <li class="list-group-item">
 
-<!--ADD PHOTO-->
+      <div class="username" style="    font-family: 'Trispace', sans-serif;"> <img src="{{url_for('static', filename='images/'+note.poster.profile_pic)}}" class="profile_img"
+        alt="img error">{{note.poster.user_name}}
+      </div>
 
-<form
-  action="{{url_for('views.upload')}}"
-  method="post"
-  enctype="multipart/form-data"
->
-  <input name="pic" class="upload" type="file" />
-  <label>caption..</label>
-  <textarea
-    name="caption"
-    id="caption"
-    cols="30"
-    rows="10"
-    class="form-control"
-    placeholder="write Caption.."
-  ></textarea>
+      <div> <b>Post:</b>
+        {%if note.edited == True %}
+          <div class="edited" style="font-family: 'Poppins', sans-serif;"><small>(edited)</small>
 
-  <div><button class="btn btn-primary">ADDPIC</button></div>
-</form>
+          </div>
+
+        {%endif%}
+        <p class ="post" style="font-family: 'Gantari', sans-serif;">{{ note.post }}<p>
+    
+      </div>
+
+      {{note.likes |length}}
+
+
+
+      {%if current_user.id in note.likes|map(attribute="user_id")|list%}
+      <a href="/posts" onClick="like ( {{ note.id }} )" role="button" data-bs-toggle="button"><i class="fa-solid fa-thumbs-up"></i></a>
+      {%else%}
+      <a href="/posts" onClick="like ( {{ note.id }} )" role="button" data-bs-toggle="button"><i class="fa-regular fa-thumbs-up"></i></a>
+
+      {%endif%}
+
+
+
+      {% if note.poster.id == session["user_id"] or current_user.admin == True%}
+      <button type="button" class="btn btn-danger" onClick="deleteNote ( {{ note.id }} )">Remove Post
+
+      </button>
+      <a href="{{url_for('views.edit_note',id=note.id)}}">Edit</a>
+
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+
+
+
+<div class="shadow p-3 mb-5 bg-body rounded">
+
+  <ul class="list-group list-group-flush" id="notes">
+    {% for image in images %}
+    <li class="list-group-item">
+      <div class="img">
+        <img src="{{url_for('static', filename='images/'+image.img_poster.profile_pic)}}" class="profile_img"
+          alt="img error"> {{image.img_poster.user_name}}
+
+      </div>
+      <p class="caption" style="font-family: 'Trispace', sans-serif;" > Post:   </p>
+      <div class="shadow p-3 mb-5 bg-body rounded">
+        
+          <img src="{{url_for('static', filename='images/post/'+image.img_name)}}" class="post_image" alt="img error">
+        <div >
+          <h4 class="caption" style="font-family: 'Trispace', sans-serif;" >Caption:</h4>
+          <p class="caption" style="font-family: 'Trispace', sans-serif;">{{image.caption}}</p>
+        </div>
+          
+       
+        <div class="Like">
+          {{image.likes |length}}
+
+
+
+          {%if current_user.id in image.likes|map(attribute="user_id")|list%}
+          <a href="#" onClick=" img_like ( {{ image.id }} )" role="button" data-bs-toggle="button"><i
+              class="fa-solid fa-thumbs-up"></i></a {%else%} <a href="#" onClick=" img_like ( {{ image.id }} )"
+            role="button" data-bs-toggle="button"><i class="fa-regular fa-thumbs-up"></i></a {%endif%} </div>
+
+
+          {% if image.img_poster.id == session["user_id"] or current_user.admin == True%}
+          <button type="button" class="btn btn-danger" onClick="deleteImg ( {{ image.id }} )">Remove image
+
+          </button>
+
+          {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+
+
 
 {% endblock %}
