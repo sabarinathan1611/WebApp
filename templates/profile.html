@@ -1,5 +1,6 @@
 {% extends "base.html" %} {% block title %}Profile {% endblock %} {% block
 content%}
+
 <style>
   .profile_img {
     width: 150px;
@@ -38,6 +39,20 @@ content%}
 
 <form action="/profile" method="post" enctype="multipart/form-data">
   <strong> Edit Your Profile</strong>
+
+
+  <div class="form-group">
+    <label for="Bio">UserName</label>
+    <input
+      type="text"
+      class="form-control"
+      name="username"
+      value="{{current_user.user_name}}"
+      placeholder="Add your Name"
+    />
+  </div>
+
+
 
   <div class="form-group">
     <label for="Bio">Full Name</label>

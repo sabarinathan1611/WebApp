@@ -8,6 +8,8 @@
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
 />
 
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
   <title>{% block title %} {% endblock %}</title>
   {% block head %}
   <!-- Required meta tags -->
@@ -15,12 +17,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
 
-  <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anek+Malayalam:wdth,wght@120.8,100&display=swap" rel="stylesheet"> 
 
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
 
   {% endblock %}
@@ -45,15 +46,22 @@
             {% if "user_id" in session %}
             <a class="nav-link active" aria-current="page" href="/">Home</a>
             <a class="nav-link" id="profile" href="{{url_for('views.my_post')}}">My posts</a>
-            <a class="nav-link" href="{{url_for('views.posts')}}">Posts</a>
+            <a class="nav-link" href="{{url_for('views.createpost')}}">Createpost</a>
             <a class="nav-link" href="{{url_for('views.profile')}}">Profile</a>
+            
             <a class=" nav-link" id="logout" href="{{url_for('auth.logout')}}">Logout</a>
 
 
-            {%if current_user.admin == True  or current_user.id==1%}
-            <a class="nav-link" id="profile" href="{{url_for('views.admin')}}">Admin</a>
-
+           
+            {%if current_user.admin  == True or current_user.id == 1 %}
+                <a class="nav-link" id="profile" href="{{url_for('views.admin')}}">Admin</a>
+             
+              {% endif %}
+              {%if current_user.admin == True  or current_user.id==1%}
+              <a class="nav-link" id="profile" href="{{url_for('views.admin_login')}}">Admin_login</a>
+          
             {% endif %}
+            
 
             {% else %}
             <a class="nav-link" id="login" href="{{url_for('auth.login')}}">Login</a>
@@ -63,39 +71,7 @@
         </div>
       </div>
     </nav>
-    <!--<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbar"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbar">
-        <div class="navbar-nav">
-          {% if "user_id" in session %}
-          
-            <a class="nav-item nav-link" id="home" href="/">Home</a>
-            <a class="nav-item nav-link" id="profile" href="{{url_for('views.my_post')}}">My posts</a>
-            <a class="nav-item nav-link" id="profile" href="{{url_for('views.posts')}}">Posts</a>
-            <a class="nav-item nav-link" id="profile" href="{{url_for('views.profile')}}">Profile</a>
-            <a class="nav-item nav-link" id="logout" href="{{url_for('auth.logout')}}">Logout</a>
-            
-           
-  
-            {%if current_user.id == 1 %}
-            <a class="nav-item nav-link" id="profile" href="{{url_for('views.admin')}}">Admin</a>
-           
-            {% endif %}
-          {% else %}
-            <a class="nav-item nav-link" id="login" href="{{url_for('auth.login')}}">Login</a>
-            <a class="nav-item nav-link" id="signUp" href="{{url_for('auth.sing_up')}}">Sign Up</a>
-          {% endif %}
-         
-        </div>
-      </div>
-    </nav>-->
+   
 
     {% with messages = get_flashed_messages(with_categories=true) %} {% if
     messages %} {% for category, message in messages %} {% if category ==

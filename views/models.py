@@ -1,25 +1,14 @@
 from datetime import date
-from email.policy import default
-from enum import unique
 from . import db
 from flask_login import UserMixin
 from sqlalchemy.sql import func
-
-
-class Note(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    post = db.Column(db.String(10000))
-    date = db.Column(db.DateTime(timezone=True), default=func.now())
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    likes= db.relationship('Post_like', backref='like')
-
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(150), unique=True)
     password = db.Column(db.String(500))
-    user_name = db.Column(db.String(150), unique=True)
-    admin = db.Column(db.Boolean, default=False)
+    user_name = db.Column(db.String(150),nullable=False, unique=True)
+    
     gender = db.Column(db.String(150))
 
     name = db.Column(db.String(150), nullable=True, default='None')
@@ -29,9 +18,29 @@ class User(db.Model, UserMixin):
     date = db.Column(db.DateTime(timezone=True), default=func.now())
     notes = db.relationship('Note', backref='poster')
     images = db.relationship('Image', backref='img_poster')
+    admin = db.Column(db.Boolean, default=False)
     
+    
+    
+    def __repr__(self) :
+        return '<Name %r>' %self.name
 
+class Note(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    post = db.Column(db.String(10000),nullable=False)
+    edited=db.Column(db.Boolean, default=False)
+    date = db.Column(db.DateTime(timezone=True), default=func.now())
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    likes= db.relationship('Post_like', backref='like')
 
+class Admin(db.Model):
+    id = db.Column(db.Integer,primary_key = True)
+    date = db.Column(db.DateTime(timezone=True), default=func.now())
+   
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    email= db.Column(db.Integer)
+    password = db.Column(db.String(500),nullable=True)
+    name = db.Column(db.String(150),nullable=True)
 
 
 class Image(db.Model):
@@ -39,7 +48,7 @@ class Image(db.Model):
     caption = db.Column(db.Text, nullable=True)
     date = db.Column(db.DateTime(timezone=True), default=func.now())
     img_name = db.Column(db.String(100000), unique=True)
-    mimetype = db.Column(db.Text, nullable=True)
+    mimetype = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     likes= db.relationship('Image_like', backref='like')
     
@@ -55,4 +64,5 @@ class Image_like(db.Model):
     post_id =db.Column(db.Integer, db.ForeignKey('image.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     date = db.Column(db.DateTime(timezone=True), default=func.now()) 
+    
     

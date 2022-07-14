@@ -7,7 +7,7 @@ content%}
 />
 
 
-
+{%if current_user.admin != True%}
 <form class="form1" method="post">
   <h3>Login</h3> 
   <div class="form-group">
@@ -28,7 +28,31 @@ content%}
   <br />
   <button type="submit" class="login">Login</button>
 </form>
+{%endif%}
+{%if current_user.admin == True%}
 
-<style></style>
+
+<form class="form1" action="{{url_for('views.admin_login')}}" method="post">
+  <h3>Login as Admin</h3> 
+  <div class="form-group">
+    <label for="email">Email Address</label>
+    <input type="email" class="form-control" id="email" name="email" value="{{admin.email}}" />
+  </div>
+
+  <div class="form-group">
+    <label for="password">Password</label>
+    <input
+      type="password"
+      class="form-control"
+      id="password1"
+      name="password"
+    />
+  </div>
+  <a class="singup_link" href="/new_password"> Forget password</a>
+  <br />
+  <button type="submit" class="login">Login</button>
+</form>
+
+{%endif%}
 
 {% endblock %}
