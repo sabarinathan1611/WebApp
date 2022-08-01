@@ -1,29 +1,27 @@
-from crypt import methods
-import re
 from time import time
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask import request
 import smtplib
-
-from matplotlib.backend_bases import RendererBase  #for mail sending
 from . import db
 from .models import User, Image
 from werkzeug.security import generate_password_hash, check_password_hash  #convert password to hash value
 from random import randint
-from flask_login import login_user, logout_user, current_user
+from flask_login import login_required, login_user, logout_user, current_user
 from flask import session
-from datetime import timedelta
-from . import create_app
     
 def otp_time():
     Otpstarttime = session["Otpstarttime"]
-    Otpendtime = 180
+    Otpendtime = 280
     while True:
         if time() - Otpstarttime >= Otpendtime:
-            flash("OTP Expired", category='error')
-            session.pop('Otpstarttime', None)
-            session.pop('Otp', None)
-            break
+            
+            if "passchg_otp" in session:
+                session.pop('passchg_otp',None)
+                
+            else:
+                session.pop('Otpstarttime', None)
+                session.pop('Otp', None)
+                break
         return True
 
 def Name(user_name):
@@ -44,7 +42,7 @@ def Name(user_name):
                 break
     return bool()
 
-def OTP(Otp,email):
+def Send_mail(Otp,email):
                 
             try: 
                 subject = 'OTP'
@@ -70,7 +68,7 @@ auth = Blueprint('auth',
 def login():
     if current_user.is_authenticated :
         flash("Logout your account")
-        return redirect('/')
+        return redirect(url_for('views.home'))
     else:
         if request.method == 'POST':
             email = request.form.get('email')
@@ -106,38 +104,64 @@ def new_password():
             Otp=randint(000000, 999999)  #creat OTP
             Otpstarttime = time()
             session["Otpstarttime"] = Otpstarttime
-            session["Otp"] = Otp
+            session["passchg_otp"] = Otp
             session["email"] = email
-            OTP(Otp,email)
+            Send_mail(Otp,email)
              
-            return redirect(url_for('auth.change_password'))
+            return redirect(url_for('auth.otp_verfiy'))
         else:
             flash('Email does not exist.', category='error')
             return redirect(url_for('auth.login'))
     return render_template('newPass_email.html')
+
+@auth.route('/otp_verify', methods=['GET', 'POST'])
+def otp_verfiy():
+    if request.method =='POST' :
+        otp=request.form.get('OTP') 
+        
+        print(otp_time())
+        if "passchg_otp" in session:
+            if  int(otp) == session["passchg_otp"] and otp_time() == True:
+                flash('otp macth')
+                
+                return redirect(url_for('auth.change_password'))
+        else:
+            flash("OTP Expired", category='error')
+            return redirect(url_for('auth.new_password'))
+    return render_template('verify.html')
+          
 
 #change password
 @auth.route('/change_password', methods=['GET', 'POST'])
 def change_password():
     email=session["email"] 
     user = User.query.filter_by(email=email).first()
-    if otp_time() == True:
-        if request.method =='POST':
-            password1=request.form.get('password1')
-            password2=request.form.get('password2')
-            
-            if password1 == password2:
-                user.password = generate_password_hash(password1)
-                db.session.commit()
-                flash("password updated")
-                return redirect('/login')
-            else:
-                flash('password don\'t macth.', category='error')
+    
+    if request.method =='POST' :
+        
+        password1=request.form.get('password1')
+        password2=request.form.get('password2')
+        print(password1,"pass2:",password2)
+        print('work1')
+        if password1 == password2 :
+            print('work2')
+            user.password = generate_password_hash(password1)
+            db.session.commit()
+            session.pop('Otp',None)
+            session.pop('email',None)
+            flash("password updated")
+                
+            return redirect(url_for('auth.login'))
+            # else:
+            #    return flash('password don\'t macth.', category='error')
+        else:
+            return flash(' OTP don\'t macth',category='error')
                 
     return render_template('changePassword.html',user=user)
           
 #logout
 @auth.route('/logout')
+@login_required
 def logout():
     if "user_id" in session:
         if  f"admin_login{current_user.id}" in session :       
@@ -210,7 +234,7 @@ def verfiy():
 
             return redirect('/sign-up')
         elif  Name(user_name) == False :
-            flash("must be add letter", category='error')
+            flash("must be add Engligh letter", category='error')
             return redirect('/sign-up')
         
         
@@ -237,7 +261,7 @@ def verfiy():
             # send otp mail to user mail
             try:
 
-               OTP(Otp,email)
+               Send_mail(Otp,email)
 
             except smtplib.SMTPException:
                 flash("Somthing Error Check Your Email Address",
@@ -254,7 +278,7 @@ def verfiy():
 #confirm the OTP
 @auth.route('/confirm', methods=['GET', 'POST'])
 def confirm():
-    if 'Otpstarttime' in session:
+    if 'Otp' in session:
     
         
         if otp_time() == True:
@@ -298,7 +322,9 @@ def confirm():
             else:
                 flash('wrong otp!', category='error')
         else:
+            flash("OTP Expired", category='error')
             return redirect(url_for('auth.sing_up'))
     else:
+        
         return redirect('/login')
-    return redirect(url_for('auth.login'))
+    return redirect(url_for('auth.login')) 

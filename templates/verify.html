@@ -1,5 +1,25 @@
 {% extends "base.html" %} {% block title %}Verify {% endblock %} {% block
 content%} {{msg}}
+
+
+{% if 'passchg_otp' in session %}
+<h1>passchg_otp</h1>
+<form  method="post">
+  <div class="form-group">
+    <label for="otp">OTP</label>
+    <input
+      type="text"
+      class="form-control"
+      id="otp"
+      name="OTP"
+      placeholder="Enter OTP"
+    />
+  </div>
+
+  <br />
+  <button type="submit" class="btn btn-primary">Verify</button>
+</form>
+{% else %}
 <form action="{{url_for('auth.confirm')}}" method="post">
   <div class="form-group">
     <label for="otp">OTP</label>
@@ -15,4 +35,5 @@ content%} {{msg}}
   <br />
   <button type="submit" class="btn btn-primary">Verify</button>
 </form>
+{% endif %}
 {% endblock %}

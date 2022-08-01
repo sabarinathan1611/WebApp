@@ -19,9 +19,11 @@ class User(db.Model, UserMixin):
     notes = db.relationship('Note', backref='poster')
     images = db.relationship('Image', backref='img_poster')
     admin = db.Column(db.Boolean, default=False)
+    comments = db.relationship('Comment', backref='user')
+    img_comments = db.relationship('ImageComment', backref='user')
+
     
-    
-    
+
     def __repr__(self) :
         return '<Name %r>' %self.name
 
@@ -32,7 +34,7 @@ class Note(db.Model):
     date = db.Column(db.DateTime(timezone=True), default=func.now())
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     likes= db.relationship('Post_like', backref='like')
-
+    comments = db.relationship('Comment', backref='post')
 class Admin(db.Model):
     id = db.Column(db.Integer,primary_key = True)
     date = db.Column(db.DateTime(timezone=True), default=func.now())
@@ -51,6 +53,7 @@ class Image(db.Model):
     mimetype = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     likes= db.relationship('Image_like', backref='like')
+    comments = db.relationship('ImageComment', backref='post')
     
 
 class Post_like(db.Model):
@@ -65,4 +68,19 @@ class Image_like(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     date = db.Column(db.DateTime(timezone=True), default=func.now()) 
     
+class Comment (db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    post_id = db.Column(db.Integer, db.ForeignKey('note.id'))
+    text = db.Column(db.String(10000),nullable=False)
+    edited=db.Column(db.Boolean, default=False)
+    date = db.Column(db.DateTime(timezone=True), default=func.now())
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    
+class ImageComment (db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    post_id = db.Column(db.Integer, db.ForeignKey('image.id'))
+    text = db.Column(db.String(10000),nullable=False)
+    edited=db.Column(db.Boolean, default=False)
+    date = db.Column(db.DateTime(timezone=True), default=func.now())
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     
