@@ -11,3 +11,15 @@
     font-family: 'Poppins', sans-serif !important;
     background-color: black !important;
 }
+
+.row {
+	--bs-gutter-x: 1.5rem;
+	--bs-gutter-y: 0;
+	display: flex;
+	flex-wrap: wrap;
+	margin-top: calc(-1 * var(--bs-gutter-y));
+	margin-right: calc(-.5 * var(--bs-gutter-x));
+	margin-left: calc(-.5 * var(--bs-gutter-x));
+	border-bottom: 1px solid;
+	border-block-color: rgb(19, 14, 25);
+}

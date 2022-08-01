@@ -6,24 +6,23 @@ import uuid
 from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
 from flask_login import login_required, current_user
 from flask import session
-from .models import Image, Image_like, User, Note,Post_like,Admin
+from .models import Image, Image_like, User, Note,Post_like,Admin,Comment,ImageComment
 from . import db
 from . import create_app
 from werkzeug.utils import secure_filename  #for secure file
 from werkzeug.security import generate_password_hash,check_password_hash
-
 views = Blueprint('views',
                   __name__,
                   template_folder='../templates',
                   static_folder='../static')
 
 app = create_app()
-
 # runs before FIRST request (only once)
 @app.before_first_request  
 def make_session_permanent():
     session.permanent = True
     app.permanent_session_lifetime = timedelta(hours=3)
+    
 
 
 #Allowed Extensions
@@ -164,6 +163,50 @@ def update_note(id):
                 flash('NOTE update!', category='success')
     return redirect('/')
             
+#comment post 
+@views.route("/comment/<post_id>",methods=['POST','GET'])
+@login_required
+def comment (post_id):
+    print("postId:",post_id)
+    note = Note.query.filter_by(id = post_id).first()
+    text = request.form.get('text')
+    print(text)
+    if not text :
+        
+        flash("empty comment ",category='error')
+    else:
+        if note:
+            comment = Comment(
+            text=text, user_id=current_user.id, post_id=note.id)
+            db.session.add(comment)
+            db.session.commit()
+        else:
+            flash('Post does not exist.', category='error')
+    return redirect('/')
+
+#imagecomment
+@views.route("/imgcomment/<post_id>",methods=['POST','GET'])
+@login_required
+def imgcomment (post_id):
+    print("postId:",post_id)
+    image = Image.query.filter_by(id = post_id).first()
+    text = request.form.get('text')
+    print(text)
+    if not text :
+        
+        flash("empty comment ",category='error')
+    else:
+        if image:
+            comment = ImageComment(
+            text=text, user_id=current_user.id, post_id=image.id)
+            db.session.add(comment)
+            db.session.commit()
+        else:
+            flash('Post does not exist.', category='error')
+    return redirect('/')
+
+
+    
     
 #like
 @views.route("/like-post",methods=['POST','GET'])
@@ -226,12 +269,19 @@ def delete_note():
     noteID = note['noteId']
     print("type:", noteID)
     note = Note.query.get(noteID)
+    comments = note.comments
     likes=note.likes
     for like in likes:
         id = like.id
         post_like=Post_like.query.get(id)
         db.session.delete(post_like)
         db.session.commit()
+    for comment in comments:
+        id = comment.id 
+        post_comment=Comment.query.get(id)
+        db.session.delete(post_comment)
+        db.session.commit()
+        
         
 
     if note:
@@ -239,7 +289,7 @@ def delete_note():
         if note.user_id == current_user.id or session["user_id"] == 1:
             db.session.delete(note)
             db.session.commit()
-    return redirect('/')
+    return redirect(url_for('views.home'))
 
 
 #Delete Photo
@@ -256,13 +306,19 @@ def delete_img():
     path = app.config['POST_FOLDER'] + namee
     
     likes = img.likes
-    
+    comments = img.comments
     for like in likes:
         id = like.id
         image_like=Image_like.query.get(id)
         db.session.delete(image_like)
         db.session.commit()
-
+        
+    for comment in comments:
+        id = comment.id 
+        post_comment=ImageComment.query.get(id)
+        db.session.delete(post_comment)
+        db.session.commit()
+        
     print("nameeeeee:   ", namee)
     if img:
         if img.user_id == user.id or session["user_id"] == 1:
@@ -474,11 +530,16 @@ def admin_details():
                 email = request.form.get('email')
                 name = request.form.get('name')
                 password=request.form.get('password')
+                password1=request.form.get('password1')
                 email_check = Admin.query.filter_by(email=email).first()
                 
                 if len(email) < 1:
                     flash('email is too short!', category='error')
                     return redirect(url_for('views.admin_details'))
+                elif password != password1:
+                    flash('password don\'t macth.', category='error')
+                    return redirect(url_for('views.admin_details'))
+                
                 else:
                     if admin.email != email:
                         if email_check:
@@ -571,6 +632,12 @@ def delete_user():
                 id = image.id
                 photo = Image.query.get(id)
                 image_likes=photo.likes
+                comments = photo.comments
+                for comment in comments:
+                    id =comment.id
+                    imgComment=ImageComment.query.get(id)
+                    db.session.delete(imgComment)
+                    db.session.commit()
                 for like in image_likes:
                     id = like.id
                     image_like=Image_like.query.get(id)
@@ -588,12 +655,19 @@ def delete_user():
                 id = note.id
                 note = Note.query.get(id)
                 post_likes=note.likes
+                comments=note.comments
             
                 for like in post_likes:
                                 id = like.id
                                 post_like=Post_like.query.get(id)
                                 db.session.delete(post_like)
                                 db.session.commit()
+                                
+                for comment in comments:
+                        id = comment.id 
+                        post_comment=Comment.query.get(id)
+                        db.session.delete(post_comment)
+                        db.session.commit()
                 
                 db.session.delete(note)
                 db.session.commit()
@@ -698,3 +772,4 @@ def createuser():
                     flash("New user Added")
                     return redirect(url_for('views.admin'))
     return redirect(url_for('views.admin'))
+

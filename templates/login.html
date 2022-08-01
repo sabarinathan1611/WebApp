@@ -26,7 +26,7 @@ content%}
   </div>
   <a class="singup_link" href="/new_password"> Forget password</a>
   <br />
-  <button type="submit" class="login">Login</button>
+  <button id = 'Boutton'type="submit" class="login">Login</button>
 </form>
 {%endif%}
 {%if current_user.admin == True%}
@@ -54,5 +54,6 @@ content%}
 </form>
 
 {%endif%}
+
 
 {% endblock %}

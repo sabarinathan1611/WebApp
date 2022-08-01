@@ -8,7 +8,20 @@ function like(noteId) {
     });
   }
   
+  function comment(noteId) {
+    fetch("/comment", {
+      method: "POST",
+      body: JSON.stringify({ noteId: noteId }),
+    }).then((_res) => {
+      window.location.href = "/";
+      
+    });
+  }
   
+
+
+
+
   function img_like(imgId) {
     fetch("/img_post-like", {
       method: "POST",
