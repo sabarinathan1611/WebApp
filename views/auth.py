@@ -51,7 +51,7 @@ def Send_mail(Otp,email):
                 print(message)
                 server = smtplib.SMTP("smtp.gmail.com", 587)
                 server.starttls()
-                server.login("sabarinathan.project@gmail.com", "#sabarinathan7812885388")
+                server.login("Your Email", "Your Email Password")
                 server.sendmail("sabarinathan.project@gmail.com", email,
                                 message)
             except smtplib.SMTPException:
