@@ -5,76 +5,42 @@
 
     <form  method="post" >
         <strong> Edit Your Profile</strong>
+        {{form.csrf_token()}}
+  
         <div class="form-group">
-          <label for="FullName">Full Name</label>
-          <input
-            type="text"
-            class="form-control"
-            name="user_name"
-            value="{{user.user_name}}"
-            placeholder="Add your Name"
-          />
-        </div>
-
-          <div class="form-group">
-            <label for="Email">Email</label>
-            <input
-              type="email"
-              class="form-control"
-              name="email"
-              value="{{user.email}}"
-              placeholder="Add your Name"
-            />
-          </div>
-
-        <div class="form-group">
-          <label for="FullName">Full Name</label>
-          <input
-            type="text"
-            class="form-control"
-            name="name"
-            value="{{user.name}}"
-            placeholder="Add your Name"
-          />
+         {{form.email.label}}
+      
+          {{form.email(class="form-control",value=user.email)}}
+        
         </div>
       
         <div class="form-group">
-          <label for="Bio">Bio</label>
-          <input
-            type="text"
-            class="form-control"
-            id="Bio"
-            name="bio"
-            value="{{user.bio}}"
-            placeholder="Add your Bio"
-          />
+         {{form.username.label}}
+         {{form.username(class="form-control",value=user.user_name)}}
         </div>
 
         <div class="form-group">
-            <h1>Gender</h1>
-          <legend>{{user.gender}}</legend>
-          
+          {{form.fullname.label}}
+         {{form.fullname( class="form-control",value=user.name)}}
+        </div>
 
-          <div class="form-group">
-            <fieldset>
-              <legend>Gender</legend>
-              {%if user.gender == 'Male'%}
-              
-              Male<input class="form-check-input mt-0" type="radio" name="gender" value="Male"checked> 
-             
-              Female<input class="form-check-input mt-0" type="radio" name="gender" value="Female"> 
-              {%else%}
-              Male<input class="form-check-input mt-0" type="radio" name="gender" value="Male"> 
-             
-              Female<input class="form-check-input mt-0" type="radio" name="gender" value="Female"checked> 
-              {% endif %}
-                                                           
-            </fieldset>
-              </div>
+        <div class="form-group">
+          {{form.bio.label}}
+         {{form.bio( class="form-control",value=user.bio)}}
+        </div>
 
-        
-        <br />
-        <button type="submit" class="btn btn-primary">Update</button>
+        <div class="form-group">
+          <fieldset >
+            
+            {{ form.gender.label ()}} {{ form.gender() }}                                                
+          </fieldset>
+            </div>
+            {{form.submit( class="btn btn-primary")}}
+
+
+
+         
+            
       </form>
 
 

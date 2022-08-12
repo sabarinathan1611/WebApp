@@ -10,6 +10,8 @@ from .models import Image, Image_like, User, Note,Post_like,Admin,Comment,ImageC
 from . import db
 from . import create_app
 from werkzeug.utils import secure_filename  #for secure file
+
+from.wtforms import *
 from werkzeug.security import generate_password_hash,check_password_hash
 views = Blueprint('views',
                   __name__,
@@ -17,7 +19,9 @@ views = Blueprint('views',
                   static_folder='../static')
 
 app = create_app()
+
 # runs before FIRST request (only once)
+
 @app.before_first_request  
 def make_session_permanent():
     session.permanent = True
@@ -26,7 +30,7 @@ def make_session_permanent():
 
 
 #Allowed Extensions
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'webp','raw','svg'])
 
 
 def allowed_file(filename):
@@ -43,8 +47,6 @@ def home():
         userId = current_user.id
 
         id = session["user_id"]
-        print(id)
-        print(userId)
         if id == int(userId):
             user = current_user
             session["user_name"] = user.user_name
@@ -75,9 +77,9 @@ def my_post():
 @views.route('/createpost', methods=['GET', 'POST'])
 @login_required
 def createpost():
-
-    if request.method == 'POST':
-                note = request.form.get('note')
+    form= Createpost()
+    if form.validate_on_submit():
+                note = request.form.get('content')
                 if len(note) < 1:
                     flash('Note is too short!', category='error')
                 else:
@@ -86,10 +88,8 @@ def createpost():
                     db.session.commit()
                     flash('NOTE created!', category='success')
                     return redirect('/')
-    return render_template('creat_post.html')
+    return render_template('creat_post.html',form=form)
 
-
-#Upolad a image
 @views.route('/upload_img', methods=['POST'])
 @login_required
 def upload_img():
@@ -135,9 +135,13 @@ def upload_img():
 @views.route('/edit_note/<int:id>', methods=['POST','GET'])
 @login_required
 def edit_note(id):
+    form = Createpost()
     note = Note.query.get(id)
+    form.content.data=note.post
+    
     if current_user.id == note.user_id or current_user.admin == True:   
-        return render_template('editpost.html',note=note)
+        
+        return render_template('editpost.html',note=note,form=form)
     
     else:
         flash("you can't Edit other user post",category='error')
@@ -151,7 +155,7 @@ def update_note(id):
     if current_user.id == note.user_id or current_user.admin == True:    
         
         if request.method == 'POST':
-            post = request.form.get('note')
+            post = request.form.get('content')
             print(post)
             if len(post) < 1 :
                 flash('Note is too short!', category='error')
@@ -209,33 +213,33 @@ def imgcomment (post_id):
     
     
 #like
-@views.route("/like-post",methods=['POST','GET'])
+@views.route("/like-post/<post_id>",methods=['POST','GET'])
 @login_required
-def post_like():
-    note = json.loads(request.data)
-    post_id = note['noteId']
+def post_like(post_id):
+    # note = json.loads(request.data)
+    # post_id = note['noteId']
     
     post =Note.query.filter_by(id=post_id).first()
     like=  Post_like.query.filter_by(user_id=current_user.id,post_id=post_id).first()
     print("work1")
     if not post:
-        flash("post does not exist",category='error')
+        return jsonify({'error': 'Post does not exist.'}, 400)
         
     elif like:
         print(like)
         db.session.delete(like)
         db.session.commit()
-        return redirect('/') 
+        
 
     else:
         print("work3")
         like= Post_like(user_id=current_user.id,post_id=post_id)
         db.session.add(like)
         db.session.commit()
-        return redirect('/') 
+        
 
         
-    # return redirect(url_for('views.posts')) 
+    return jsonify({"likes": len(post.likes), "liked": current_user.id in map(lambda x: x.user_id, post.likes)})
 
 
 
@@ -289,7 +293,7 @@ def delete_note():
         if note.user_id == current_user.id or session["user_id"] == 1:
             db.session.delete(note)
             db.session.commit()
-    return redirect(url_for('views.home'))
+    return jsonify()
 
 
 #Delete Photo
@@ -333,17 +337,18 @@ def delete_img():
 @views.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
+    form =Profileupdate()
 
-    user = current_user
+    user = user = User.query.get(current_user.id)  
 
     images = user.profile_pic
 
-    if request.method == 'POST':
-        user_name = request.form.get('username')
-        bio = request.form.get('Bio')
-        name = request.form.get('Name')
-        pic = request.files['pic']
-        userName=User.query.filter_by(user_name=user_name).first()
+    if  request.method == 'POST':
+        # user_name = request.form.get('username')
+        bio = request.form.get('bio')
+        name = request.form.get('fullname')
+        pic = request.files['image']
+        # userName=User.query.filter_by(user_name=user_name).first()
 
         if len(name) < 1:
             flash('Name is too short!', category='error')
@@ -355,7 +360,7 @@ def profile():
         
 
         else:
-            if pic and allowed_file(pic.filename):
+            if pic and allowed_file(pic.filename) :
 
                 filename = secure_filename(pic.filename)
                 num = str(randint(00000000, 99999999))
@@ -402,8 +407,11 @@ def profile():
                 user.bio = bio
                 user.name = name
                 db.session.commit()
+                # flash('Images only!',category='error')
+                
 
-    return render_template('profile.html', images=images)
+    return render_template('profile.html', images=images,form=form)
+
 
 
 
@@ -428,10 +436,13 @@ def remove_Profile_photo ():
 @views.route('/admin-login', methods=['POST', 'GET'])
 @login_required
 def admin_login():   
+    form = LoginForm()
+    
+
     
     if current_user.admin == True:
         admin = Admin.query.filter_by(user_id=current_user.id).first()
-        if request.method == 'POST':
+        if request.method == "POST":
             email = request.form.get('email')
             password=request.form.get('password')
             admin_data = Admin.query.filter_by(email=email).first()  #check email from db
@@ -448,12 +459,12 @@ def admin_login():
                     else:
                         flash('you cannot use other admin ID ', category='success')
                         return redirect(url_for('views.admin'))
-        return render_template('login.html',admin=admin)
+        return render_template('login.html',admin=admin,form=form)
     else:
         flash("User muste be a admin for access this page")
         return redirect(url_for('views.home'))
 
-# logut user
+# logut Admin
 @views.route('logout-admin', methods=['GET'])
 @login_required
 def logout_admin():
@@ -472,11 +483,12 @@ def logout_admin():
 @views.route('/admin', methods=['POST', 'GET'])
 @login_required
 def admin(): 
+    form= SearchForm()
         
     if  f"admin_login{current_user.id}" in session :       
         if current_user.admin  == True and session[f"admin_login{current_user.id}"] == current_user.id: 
             user = User.query.order_by(User.date)     
-            return render_template("Admin.html", user=user)
+            return render_template("Admin.html", user=user,form =form)
         else:
             flash("User muste be a admin for access this page")
             return redirect(url_for('views.admin_login'))
@@ -523,14 +535,15 @@ def add_admin():
 @views.route('/admin_details', methods=['POST', 'GET'])
 @login_required
 def admin_details(): 
+    form=Editadmin()
     if  f"admin_login{current_user.id}" in session :       
         if current_user.admin  == True and session[f"admin_login{current_user.id}"] == current_user.id:
             admin = Admin.query.filter_by(user_id=session[f"admin_login{current_user.id}"]).first()
-            if request.method == 'POST':
+            if  form.validate_on_submit( ) and request.method == 'POST':
                 email = request.form.get('email')
-                name = request.form.get('name')
-                password=request.form.get('password')
-                password1=request.form.get('password1')
+                name = request.form.get('fullname')
+                password=request.form.get('password1')
+                password1=request.form.get('password2')
                 email_check = Admin.query.filter_by(email=email).first()
                 
                 if len(email) < 1:
@@ -549,6 +562,7 @@ def admin_details():
                             admin.email = email
                             admin.name = name
                             db.session.commit()
+                            flash('Profile Updated')
                         return redirect(url_for('views.admin_details'))
                             
                     if password == None:
@@ -556,13 +570,16 @@ def admin_details():
                         admin.name = name
                         admin.password = generate_password_hash(password)
                         db.session.commit()
+                        flash('Profile Updated')
                         return redirect(url_for('views.admin_details'))
                     
                     else:
                         admin.email = email
                         admin.name = name
                         db.session.commit()
-            return render_template('editadmin.html',admin=admin)
+                        flash('Profile Updated')
+                        
+            return render_template('editadmin.html',admin=admin,form=form)
 #remove admin
 @views.route('remove_admin',methods=['POST'])
 @login_required
@@ -583,6 +600,7 @@ def remove_admin():
 @views.route('/search', methods=['POST', 'GET'])
 @login_required
 def search():
+    
     if f"admin_login{current_user.id}" in session or current_user.id == 1:  
         if current_user.admin  == True and session[f"admin_login{current_user.id}"] == current_user.id or current_user.id == 1:
             if request.method == 'POST':
@@ -690,30 +708,37 @@ def delete_user():
 @views.route('/edit_user/<int:id>', methods=['POST','GET'])
 @login_required
 def edit_user(id):
+    form=Useredit()
+    
     if f"admin_login{current_user.id}" in session  or current_user.id == 1: 
         if current_user.admin  == True and session[f"admin_login{current_user.id}"] == current_user.id or current_user.id == 1:
             user = User.query.get(id) 
+            form.gender.default=user.gender
+            form.process()
         if request.method == 'POST':
     
             email = request.form.get('email')
-            user_name = request.form.get('user_name')        
-            name = request.form.get('name')
+            user_name = request.form.get('username')        
+            name = request.form.get('fullname')
             bio = request.form.get('bio')
             gender = request.form.get('gender')
+      
             #User.query.filter_by(id=user.id).update(dict(email=email,user_name=user_name,name=name,bio=bio,gender=gender))
-            print(user_name)
-            print(email)
+           
+            
             userName = User.query.filter_by(user_name=user_name).first()
             if user.user_name == user_name:
-                    
-                user.email=email
                 
-                user.name=name
-                user.bio=bio
-                user.gender=gender
-                db.session.commit()        
-                flash("User Data updated")
-                return redirect('/admin')
+                    
+                    user.email=email
+                    print("work1")
+                    user.name=name
+                    user.bio=bio
+                    user.gender=gender
+                    db.session.commit()        
+                    flash("User Data updated")
+                    return redirect('/admin')
+            
             else:
                 print(userName)
                 if userName:
@@ -729,7 +754,7 @@ def edit_user(id):
                 return redirect('/admin')
                     
     
-        return render_template('edituser.html',user=user)
+        return render_template('edituser.html',user=user,form=form)
         
 
 #admin createuser

@@ -32,7 +32,7 @@ integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jI
 <body>
   {% block body %}
 
-  <body>
+ 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">Project Name</a>
@@ -46,6 +46,7 @@ integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jI
             {% if "user_id" in session %}
             <a class="nav-link active" aria-current="page" href="/">Home</a>
             <a class="nav-link" id="profile" href="{{url_for('views.my_post')}}">My posts</a>
+        
             <a class="nav-link" href="{{url_for('views.createpost')}}">Createpost</a>
             <a class="nav-link" href="{{url_for('views.profile')}}">Profile</a>
             
@@ -65,6 +66,7 @@ integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jI
 
             {% else %}
             <a class="nav-link" id="login" href="{{url_for('auth.login')}}">Login</a>
+            <a class="nav-link" id="login" href="{{url_for('auth.name')}}">Name</a>
             <a class="nav-link" id="signUp" href="{{url_for('auth.sing_up')}}">Sign Up</a>
             {% endif %}
           </div>

@@ -2,6 +2,10 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_login import LoginManager
+from flask_ckeditor import CKEditor
+
+
+
 
 
 db = SQLAlchemy()
@@ -17,7 +21,11 @@ def create_app():
 
     app.config['UPLOAD_FOLDER'] = "static/images/"
     app.config['POST_FOLDER'] = "static/images/post/"
-
+    
+    
+    app.config['RECAPTCHA_PUBLIC_KEY']='6LfmgGghAAAAAJysT62qcRna1JhE9t2VBUqH6Tse'
+    app.config['RECAPTCHA_PRIVATE_KEY'] ='6LfmgGghAAAAALXblkN7LJOqWvqzURb7kPgOcmW_'
+    app.config['TESTING']=True
     db.init_app(app)
 
     from .views import views
@@ -29,6 +37,8 @@ def create_app():
     from .models import User, Note, Image
 
     create_database(app)
+    ckeditor = CKEditor(app)
+
     
 
 

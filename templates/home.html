@@ -39,16 +39,24 @@
 
       </div>
 
-      {{note.likes |length}}
+      <span id="likes-count-{{note.id}}">
+        {{ note.likes|length }}</span> 
 
 
 
       {%if current_user.id in note.likes|map(attribute="user_id")|list%}
-      <a href="/posts" onClick="like ( {{ note.id }} )" role="button" data-bs-toggle="button"><i
-          class="fa-solid fa-thumbs-up"></i></a>
+      
+          <i
+          class="fas fa-thumbs-up"
+          id="like-button-{{note.id}}"
+          onclick="like({{note.id}})"
+        ></i>
       {%else%}
-      <a href="/posts" onClick="like ( {{ note.id }} )" role="button" data-bs-toggle="button"><i
-          class="fa-regular fa-thumbs-up"></i></a>
+      <i
+          class="far fa-thumbs-up"
+          id="like-button-{{note.id}}"
+          onclick="like({{note.id}})"
+        ></i>
 
       {%endif%}
 

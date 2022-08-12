@@ -2,134 +2,86 @@
 content%}
 {%if current_user.admin == True%}
 <form action="{{url_for('views.createuser')}}" method="post">
-  
+  {{form.csrf_token()}}
   <h3 align="center">Adduser</h3>
   <div class="form-group">
-    <label for="email">Email Address</label>
-    <input
-      type="email"
-      class="form-control"
-      id="email"
-      name="email"
-      placeholder="Enter the email address"
-    />
+   {{form.email.label}}
+
+    {{form.email(class="form-control",placeholder="Enter the email address")}}
+  
   </div>
 
   <div class="form-group">
-    <label for="UserName">UserName</label>
-    <input
-      type="text"
-      class="form-control"
-      id="UserName"
-      name="UserName"
-      placeholder="Enter the UserName"
-    />
+   {{form.username.label}}
+   {{form.username(class="form-control",placeholder="Enter the UserName")}}
   </div>
 
 
 
   <div class="form-group">
-    <label for="password1">Password</label>
-    <input
-      type="password"
-      class="form-control"
-      id="password1"
-      name="password1"
-      placeholder="Enter password"
-    />
+   {{form.password1.label}}
+   {{form.password1( class="form-control",placeholder="Enter password")}}
+
   </div>
   <div class="form-group">
-    <label for="password2">Password(confirm)</label>
-    <input
-      type="password"
-      class="form-control"
-      id="password2"
-      name="password2"
-      placeholder="Confirm password"
-    />
+    {{form.password2.label}}
+   {{form.password2( class="form-control",placeholder="Enter password")}}
   </div>
 
 
   <div class="form-group">
-    <fieldset>
-      <legend>Gender</legend>
-      Male<input class="form-check-input mt-0" type="radio" name="gender" value="Male"> 
-      Female<input class="form-check-input mt-0" type="radio" name="gender" value="Female">                                                  
+    <fieldset >
+      {{ form.gender.label ()}} {{ form.gender() }}                                                
     </fieldset>
       </div>
 
   <br />
-  <button type="submit" class="btn btn-primary">submit</button>
+ {{form.submit(class="btn btn-primary")}}
 </form>
 
 {%else%}
 
 
-<form action="/Verify" method="post">
+<form action="{{url_for('auth.verfiy')}}" method="post">
 
   <h3 align="center">Sign Up</h3>
+  {{form.csrf_token()}}
+  
   <div class="form-group">
-    <label for="email">Email Address</label>
-    <input
-      type="email"
-      class="form-control"
-      id="email"
-      name="email"
-      placeholder="Enter the email address"
-    />
+   {{form.email.label}}
+
+    {{form.email(class="form-control",placeholder="Enter the email address")}}
+  
   </div>
 
   <div class="form-group">
-    <label for="UserName">UserName</label>
-    <input
-      type="text"
-      class="form-control"
-      id="UserName"
-      name="UserName"
-      placeholder="Enter the UserName"
-    />
+   {{form.username.label}}
+   {{form.username(class="form-control",placeholder="Enter the UserName")}}
   </div>
 
 
 
   <div class="form-group">
-    <label for="password1">Password</label>
-    <input
-      type="password"
-      class="form-control"
-      id="password1"
-      name="password1"
-      placeholder="Enter password"
-    />
+   {{form.password1.label}}
+   {{form.password1( class="form-control",placeholder="Enter password")}}
+
   </div>
   <div class="form-group">
-    <label for="password2">Password(confirm)</label>
-    <input
-      type="password"
-      class="form-control"
-      id="password2"
-      name="password2"
-      placeholder="Confirm password"
-    />
+    {{form.password2.label}}
+   {{form.password2( class="form-control",placeholder="Enter password")}}
   </div>
 
 
   <div class="form-group">
-    <fieldset>
-      <legend>Gender</legend>
-      Male<input class="form-check-input mt-0" type="radio" name="gender" value="Male"> 
-      Female<input class="form-check-input mt-0" type="radio" name="gender" value="Female">                                                  
+    <fieldset >
+      {{ form.gender.label ()}} {{ form.gender() }}                                                
     </fieldset>
       </div>
 
   <br />
-  <button type="submit" class="btn btn-primary">submit</button>
+ {{form.submit(class="btn btn-primary")}}
 </form>
 
 {%endif%}
-
-
-
-
 
 {% endblock %}

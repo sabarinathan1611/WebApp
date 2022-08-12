@@ -2,12 +2,18 @@ from time import time
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask import request
 import smtplib
+
+
 from . import db
 from .models import User, Image
 from werkzeug.security import generate_password_hash, check_password_hash  #convert password to hash value
 from random import randint
 from flask_login import login_required, login_user, logout_user, current_user
 from flask import session
+
+
+
+
     
 def otp_time():
     Otpstarttime = session["Otpstarttime"]
@@ -24,7 +30,7 @@ def otp_time():
                 break
         return True
 
-def Name(user_name):
+def characters(user_name):
     num=65
     A=chr(num)
     name=user_name
@@ -42,20 +48,20 @@ def Name(user_name):
                 break
     return bool()
 
-def Send_mail(Otp,email):
+
+def send_mail(email,subject,body):
                 
-            try: 
-                subject = 'OTP'
-                body = f'otp:{Otp}'
+            try:                     
+                subject = subject
+                body = body
                 message = f'Subject:{subject}\n\n{body}'
-                print(message)
                 server = smtplib.SMTP("smtp.gmail.com", 587)
                 server.starttls()
-                server.login("sabarinathan.project@gmail.com", "#sabarinathan7812885388")
-                server.sendmail("sabarinathan.project@gmail.com", email,
+                server.login("your Email", "Password")
+                server.sendmail("your Email", email,
                                 message)
-            except smtplib.SMTPException:
-                flash("Somthing Error Check Your Email Address",
+            except smtplib.SMTPException as error:
+                flash(f"{error}",
                       category='error')  
 
 auth = Blueprint('auth',
@@ -63,61 +69,77 @@ auth = Blueprint('auth',
                  template_folder='../templates',
                  static_folder='../static')
 
+
+#creat a form class
+from .wtforms import *
+
+
 #Loing page
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
+    form=LoginForm()
     if current_user.is_authenticated :
         flash("Logout your account")
         return redirect(url_for('views.home'))
     else:
-        if request.method == 'POST':
-            email = request.form.get('email')
-            password = request.form.get('password1')
+        if form.validate_on_submit():
+            if request.method == 'POST':
+                email = form.email.data
+                password = form.password.data
 
-            user = User.query.filter_by(email=email).first()  #check email from db
+                user = User.query.filter_by(email=email).first()  #check email from db
 
-            if user:
-                if check_password_hash(user.password,
-                                    password):  #check the password from db
-                    flash('Logged in successfully!', category='success')
-                    login_user(user,remember=False)
+                if user:
+                    if check_password_hash(user.password,
+                                        password):  #check the password from db
+                        flash('Logged in successfully!', category='success')
+                        login_user(user,remember=False)
 
-                   
-                    session["user_id"] = user.id
+                    
+                        session["user_id"] = user.id
 
-                    return redirect(url_for('views.home'))
+                        return redirect(url_for('views.home'))
+                    else:
+                        flash('Incorrect password, try again.', category='error')
                 else:
-                    flash('Incorrect password, try again.', category='error')
-            else:
-                flash('Email does not exist.', category='error')
+                    flash('Email does not exist.', category='error')
 
-    return render_template("login.html")
+    return render_template("login.html",form=form)
 
 
 #new_password
 @auth.route('/new_password', methods=['GET', 'POST'])
 def new_password():
-    if request.method =='POST':
-        email=request.form.get('email')
+    form = NewpasswordForm()
+    print(form.validate_on_submit())
+    if form.validate_on_submit():
+        
+        email=form.email.data
+        print(email)
         userEmail = User.query.filter_by(email=email).first()
         if userEmail:
-            Otp=randint(000000, 999999)  #creat OTP
-            Otpstarttime = time()
-            session["Otpstarttime"] = Otpstarttime
-            session["passchg_otp"] = Otp
+            otp=randint(000000, 999999)  #creat OTP
+            session["Otpstarttime"] = time()
+            session["passchg_otp"] = otp
             session["email"] = email
-            Send_mail(Otp,email)
+            
+            subject="OTP"
+            body=f"Your OTP:{otp}"
+            send_mail(email,subject,body)
+            
              
             return redirect(url_for('auth.otp_verfiy'))
         else:
             flash('Email does not exist.', category='error')
             return redirect(url_for('auth.login'))
-    return render_template('newPass_email.html')
+    return render_template('newPass_email.html',form=form)
+
 
 @auth.route('/otp_verify', methods=['GET', 'POST'])
 def otp_verfiy():
-    if request.method =='POST' :
-        otp=request.form.get('OTP') 
+    form=OtpForm()
+    if form.validate_on_submit() :
+        otp=form.otp.data
         
         print(otp_time())
         if "passchg_otp" in session:
@@ -128,7 +150,7 @@ def otp_verfiy():
         else:
             flash("OTP Expired", category='error')
             return redirect(url_for('auth.new_password'))
-    return render_template('verify.html')
+    return render_template('verify.html',form=form)
           
 
 #change password
@@ -136,28 +158,36 @@ def otp_verfiy():
 def change_password():
     email=session["email"] 
     user = User.query.filter_by(email=email).first()
-    
-    if request.method =='POST' :
-        
-        password1=request.form.get('password1')
-        password2=request.form.get('password2')
-        print(password1,"pass2:",password2)
-        print('work1')
-        if password1 == password2 :
-            print('work2')
-            user.password = generate_password_hash(password1)
-            db.session.commit()
-            session.pop('Otp',None)
-            session.pop('email',None)
-            flash("password updated")
-                
-            return redirect(url_for('auth.login'))
-            # else:
-            #    return flash('password don\'t macth.', category='error')
+    form=NewpasswordForm()
+    if form.validate_on_submit() :
+        email=form.email.data
+        print(email)
+        password1=form.password1.data
+        password2=form.password2.data
+
+        if len(password1) < 7:
+            flash('Passsword must be greater than 6 characters.',
+                  category='error')
+            return redirect(url_for('auth.change_password'))
+        elif password1 != password2:
+            flash('password don\'t macth.', category='error')
+            return redirect(url_for('auth.change_password'))
         else:
-            return flash(' OTP don\'t macth',category='error')
+            if password1 == password2 :
                 
-    return render_template('changePassword.html',user=user)
+               
+                user.password = generate_password_hash(password1)
+                db.session.commit()
+                session.pop('passchg_otp',None)
+                session.pop('email',None)
+                flash("password updated")
+                    
+                return redirect(url_for('auth.login'))
+                
+            else:
+                return flash(' OTP don\'t macth',category='error')
+                
+    return render_template('changePassword.html',user=user,form=form)
           
 #logout
 @auth.route('/logout')
@@ -172,26 +202,34 @@ def logout():
     else:
 
         return redirect(url_for('auth.login'))
+    
+    
+    
 
 #Sing up page
 @auth.route('/sign-up', methods=['GET', 'POST'])
 def sing_up():
-    return render_template('sign_up.html')
+    form=SingupForm()
+   
+
+    return render_template('sign_up.html',form=form)
 
 
 #verify page, verfiy the email  adderss
-@auth.route('/Verify', methods=['GET', 'POST'])
+@auth.route('/verfiy', methods=['GET', 'POST'])
 def verfiy():
-
-    #get Data from Html
-    if request.method == 'POST':
+    otpForm=OtpForm()  
+    form=SingupForm()
+    
+    if form.validate_on_submit() and request.method == 'POST':
         
 
-        email = request.form.get('email')
-        user_name = request.form.get('UserName')
-        password1 = request.form.get('password1')
-        password2 = request.form.get('password2')
-        gender = request.form.get('gender')
+        email = form.email.data
+        user_name = form.username.data
+        password1 = form.password1.data
+        password2 = form.password2.data
+        gender = form.gender.data
+        
         print("email:", gender)
 
         #checking UserName and Email from Database
@@ -233,8 +271,8 @@ def verfiy():
                 category='error')
 
             return redirect('/sign-up')
-        elif  Name(user_name) == False :
-            flash("must be add Engligh letter", category='error')
+        elif  characters(user_name) == False :
+            flash("must be add Engligh characters", category='error')
             return redirect('/sign-up')
         
         
@@ -243,11 +281,11 @@ def verfiy():
             
             otp = randint(000000, 999999)  #creat OTP
 
-            Otp = otp
+            
             Otpstarttime = time()
             session["Otpstarttime"] = Otpstarttime
 
-            session["Otp"] = Otp
+            session["Otp"] = otp
 
             session["email"] = email
 
@@ -256,21 +294,22 @@ def verfiy():
             session["Password"] = password1
             
             session["gender"] = gender
-            
+            print(otp)
 
             # send otp mail to user mail
             try:
+                    
+                subject="OTP"
+                body=f"Your OTP:{otp}"
+                send_mail(email,subject,body)
 
-               Send_mail(Otp,email)
-
-            except smtplib.SMTPException:
+            except :
                 flash("Somthing Error Check Your Email Address",
                       category='error')
             # return redirect('/sign-up')
-    else:
-        return redirect('/login')
-
-    return render_template('verify.html')
+        return redirect(url_for('auth.verfiy'))
+    
+    return render_template('verify.html',form=otpForm)
 
 
 
@@ -280,11 +319,13 @@ def verfiy():
 def confirm():
     if 'Otp' in session:
     
-        
+        form= OtpForm()
+        print(otp_time())
         if otp_time() == True:
 
-            User_Otp = request.form.get('otp')
-
+            user_Otp = form.otp.data
+            print("User_otp: ",user_Otp)
+            
             email = session["email"]
             user_name = session["Name"]
             print("Confirm MAil page=", email)
@@ -292,13 +333,13 @@ def confirm():
             gender =session["gender"]
 
             try:
-                int_otp = int(User_Otp)
+                int_otp = int(user_Otp)
             except:
                 flash('wrong otp!', category='error')
                 return render_template('verify.html')
 
-            OTp = session["Otp"]
-            if OTp == int_otp:
+            oTp = session["Otp"]
+            if oTp == int_otp:
                 
                 
 

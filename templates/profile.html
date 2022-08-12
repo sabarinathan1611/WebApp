@@ -41,50 +41,30 @@ content%}
   <strong> Edit Your Profile</strong>
 
 
-  <div class="form-group">
-    <label for="Bio">UserName</label>
-    <input
-      type="text"
-      class="form-control"
-      name="username"
-      value="{{current_user.user_name}}"
-      placeholder="Add your Name"
-    />
-  </div>
+
 
 
 
   <div class="form-group">
-    <label for="Bio">Full Name</label>
-    <input
-      type="text"
-      class="form-control"
-      name="Name"
-      value="{{current_user.name}}"
-      placeholder="Add your Name"
-    />
+    {{form.fullname.label}}
+   {{form.fullname( class="form-control",value=current_user.name)}}
+    
   </div>
 
   <div class="form-group">
-    <label for="Bio">Bio</label>
-    <input
-      type="text"
-      class="form-control"
-      id="Bio"
-      name="Bio"
-      value="{{current_user.bio}}"
-      placeholder="Add your Bio"
-    />
+    {{form.bio.label}}
+    {{form.bio(class="form-control",value=current_user.bio)}}
+    
   </div>
 
   <div class="form-group">
-    <label for="pic">Profile photo</label>
-    <input name="pic" class="upload" type="file" />
+    {{form.image.labe}}
+    {{form.image}}
   </div>
 
   
   <br />
-  <button type="submit" class="btn btn-primary">Update</button>
+  {{form.submit( class="btn btn-primary")}}
 </form>
 
 {% endblock %}

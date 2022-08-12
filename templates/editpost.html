@@ -8,22 +8,20 @@
     
     {% endif %}
     {{note.id}}
-    
-    <form action="{{url_for('views.update_note',id=note.id)}}" method="post">
-      <textarea
-        name="note"
-        id="note"
-        cols="30"
-        rows="10"
-        class="form-control"
-        placeholder="Here you can  write your notes"
-        
-      >{{note.post}}</textarea>
+    <form action="{{url_for('views.update_note',id=note.id)}}" method="post"
+    action="{{url_for('views.createpost')}}">
+    {{ form.hidden_tag() }}
+    {{form.content.label}}
+    {{form.content(cols="30",rows="10",class="form-control",placeholder="Here you can  write your notes" )}}
+
     
       <br />
-      <div><button class="btn btn-primary">ADDNOTE</button></div>
+      <div>{{form.submit(class="btn btn-primary")}}
+      </div>
       <br />
     </form>
+   
+    
     
 
     

@@ -4,14 +4,10 @@
 
 <div class="shadow p-3 mb-5 bg-body rounded">
   <form class="d-flex" method="post" action="{{url_for('views.search')}}">
-    <input
-      class="form-control me-2"
-      type="search"
-      placeholder="Search"
-      aria-label="Search"
-      name="search"
-    />
-    <button class="btn btn-outline-secondary" type="submit">Search</button>
+    
+    {{form.search(class="form-control me-2",placeholder="Search")}}
+
+    {{form.submit(class="btn btn-outline-secondary" )}}
   </form>
   <a class="btn btn-warning" href="{{url_for('auth.sing_up')}}">Adduser</a>
   <a class="btn btn-warning" href="{{url_for('views.admin_details')}}">change details</a>

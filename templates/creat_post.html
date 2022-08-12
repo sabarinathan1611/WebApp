@@ -1,5 +1,6 @@
 {% extends "base.html" %} {% block title %} Createpost {% endblock %} {% block
-    content%} {% if "user_id" in session %}
+    content%} 
+    {% if "user_id" in session %}
     <h1>Hello {{session["user_id"]}}</h1>
     
     
@@ -10,39 +11,37 @@
     
     <form method="post"
     action="{{url_for('views.createpost')}}">
-      <textarea
-        name="note"
-        id="note"
-        cols="30"
-        rows="10"
-        class="form-control"
-        placeholder="Here you can  write your notes"
-      ></textarea>
+    {{ form.hidden_tag() }}
+    {{form.content.label}}
+    {{form.content(cols="30",rows="10",class="form-control",placeholder="Here you can  write your notes")}}
+
     
       <br />
-      <div><button class="btn btn-primary">ADDNOTE</button></div>
+      <div>{{form.submit(class="btn btn-primary")}}
+      </div>
       <br />
     </form>
+   
+
     
     <!--ADD PHOTO-->
     
     <form
-      action="{{url_for('views.upload_img')}}"
-      method="post"
-      enctype="multipart/form-data"
-    >
-      <input name="pic" class="upload" type="file" />
-      <label>caption..</label>
-      <textarea
-        name="caption"
-        id="caption"
-        cols="30"
-        rows="10"
-        class="form-control"
-        placeholder="write Caption.."
-      ></textarea>
-    
-      <div><button class="btn btn-primary">ADDPIC</button></div>
-    </form>
-    
+    action="{{url_for('views.upload_img')}}"
+    method="post"
+    enctype="multipart/form-data"
+  >
+    <input name="pic" class="upload" type="file" />
+    <label>caption..</label>
+    <textarea
+      name="caption"
+      id="caption"
+      cols="30"
+      rows="10"
+      class="form-control"
+      placeholder="write Caption.."
+    ></textarea>
+  
+    <div><button class="btn btn-primary">ADDPIC</button></div>
+  </form>
     {% endblock %}

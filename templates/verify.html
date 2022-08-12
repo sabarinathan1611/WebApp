@@ -4,36 +4,40 @@ content%} {{msg}}
 
 {% if 'passchg_otp' in session %}
 <h1>passchg_otp</h1>
+{{ session["passchg_otp"]}}
 <form  method="post">
   <div class="form-group">
-    <label for="otp">OTP</label>
-    <input
-      type="text"
-      class="form-control"
-      id="otp"
-      name="OTP"
-      placeholder="Enter OTP"
-    />
+    {{form.hidden_tag()}}
+    {{form.otp.label}}
+    
+    {{form.otp(class="form-control",placeholder="Enter OTP")}}
   </div>
 
   <br />
-  <button type="submit" class="btn btn-primary">Verify</button>
+  {{form.repcaptcha}}
+  {{form.submit(class="btn btn-primary")}}
+  
 </form>
+
 {% else %}
-<form action="{{url_for('auth.confirm')}}" method="post">
+
+
+<form action="{{url_for('auth.confirm')}}" method="POST">
+  <h1>OOTp</h1>
   <div class="form-group">
-    <label for="otp">OTP</label>
-    <input
-      type="text"
-      class="form-control"
-      id="otp"
-      name="otp"
-      placeholder="Enter OTP"
-    />
-  </div>
+    <div class="form-group">
+      {{form.hidden_tag()}}
+      {{form.otp.label}}
+      
+      {{form.otp(class="form-control",placeholder="Enter OTP")}}
+    </div>
+  
+    <br />
+    
+    {{form.submit(class="btn btn-primary")}}
 
   <br />
-  <button type="submit" class="btn btn-primary">Verify</button>
+  
 </form>
 {% endif %}
 {% endblock %}

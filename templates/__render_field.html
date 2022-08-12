@@ -1,0 +1,22 @@
+{% macro render_field(field) %}
+<div class="form-group">
+    <label for="{{field.email}}">{{field.label.text}}</label>
+
+    <div class ="col-lg-10">{{field(class_="form-control",**kwargs)|safe}}
+        {% for error in field.errors  %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            {{ error }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      
+            </button>
+        </div>
+    </div>
+
+   
+    {% endfor %}
+</div>
+
+
+
+
+{% endmacro %}

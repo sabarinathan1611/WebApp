@@ -8,49 +8,61 @@ content%}
 
 
 {%if current_user.admin != True%}
+
 <form class="form1" method="post">
+  {{ form.csrf_token }}
   <h3>Login</h3> 
   <div class="form-group">
-    <label for="email">Email Address</label>
-    <input type="email" class="form-control" id="email" name="email" />
+    {{form.email.label(for="email")}}
+    {{form.email( class="form-control", id="email"  )}}
   </div>
 
   <div class="form-group">
-    <label for="password">Password</label>
-    <input
-      type="password"
-      class="form-control"
-      id="password1"
-      name="password1"
-    />
+   
+    {{form.password.label(for="password")}}
+    {{form.password(class="form-control",id="password1")}}
   </div>
-  <a class="singup_link" href="/new_password"> Forget password</a>
+  {{ form.recaptcha }}
   <br />
-  <button id = 'Boutton'type="submit" class="login">Login</button>
+  {{form.submit(class="login")}}
+  
+
+  <a class="singup_link" href="/new_password"> Forget password</a>
 </form>
 {%endif%}
+
+
+
+
+
 {%if current_user.admin == True%}
 
 
 <form class="form1" action="{{url_for('views.admin_login')}}" method="post">
+  {{ form.csrf_token }}
   <h3>Login as Admin</h3> 
   <div class="form-group">
-    <label for="email">Email Address</label>
-    <input type="email" class="form-control" id="email" name="email" value="{{admin.email}}" />
+    {{form.email.label(for="email")}}
+    {{form.email( class="form-control", id="email"  )}}
   </div>
 
   <div class="form-group">
-    <label for="password">Password</label>
-    <input
-      type="password"
-      class="form-control"
-      id="password1"
-      name="password"
-    />
+   
+    {{form.password.label(for="password")}}
+    {{form.password(class="form-control",id="password1")}}
   </div>
-  <a class="singup_link" href="/new_password"> Forget password</a>
+ 
   <br />
-  <button type="submit" class="login">Login</button>
+   <p>
+                {% for error in form.recaptcha.errors %}
+                    {{ error }}
+                {% endfor %}
+                {{ form.recaptcha }}
+            </p>
+  {{form.submit(class="login")}}
+  
+
+  <a class="singup_link" href="/new_password"> Forget password</a>
 </form>
 
 {%endif%}
