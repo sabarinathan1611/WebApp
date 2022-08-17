@@ -40,23 +40,15 @@
       </div>
 
       <span id="likes-count-{{note.id}}">
-        {{ note.likes|length }}</span> 
+        {{ note.likes|length }}</span>
 
 
 
       {%if current_user.id in note.likes|map(attribute="user_id")|list%}
-      
-          <i
-          class="fas fa-thumbs-up"
-          id="like-button-{{note.id}}"
-          onclick="like({{note.id}})"
-        ></i>
+
+      <i class="fas fa-thumbs-up" id="like-button-{{note.id}}" onclick="like({{note.id}})"></i>
       {%else%}
-      <i
-          class="far fa-thumbs-up"
-          id="like-button-{{note.id}}"
-          onclick="like({{note.id}})"
-        ></i>
+      <i class="far fa-thumbs-up" id="like-button-{{note.id}}" onclick="like({{note.id}})"></i>
 
       {%endif%}
 
@@ -66,29 +58,29 @@
       </form>
       <div class="row row-cols-2">
 
-        
-          <div class="commentt">
-           
-            {% for comment in note.comments %}
-          
-            <div class="col">
-              <div class="font-family: 'Trispace', sans-serif;">{{comment.user.user_name}} </div>
-             
+
+        <div class="commentt">
+
+          {% for comment in note.comments %}
+
+          <div class="col">
+            <div class="font-family: 'Trispace', sans-serif;">{{comment.user.user_name}} </div>
 
 
-              <div class="font-family: 'Assistant', sans-serif;">
-                {{comment.text}}
-              </div>
 
-              <br>
+            <div class="font-family: 'Assistant', sans-serif;">
+              {{comment.text}}
             </div>
-            
-            
-            {%endfor%}
-            
+
+            <br>
           </div>
-        
-        
+
+
+          {%endfor%}
+
+        </div>
+
+
       </div>
       <br>
 
@@ -117,70 +109,68 @@
 
       </div>
       <p class="caption" style="font-family: 'Trispace', sans-serif;"> Post: </p>
-     
-
-        <img src="{{url_for('static', filename='images/post/'+image.img_name)}}" class="post_image" alt="img error">
-        <div>
-          <h4 class="caption" style="font-family: 'Trispace', sans-serif;">Caption:</h4>
-          <p class="caption" style="font-family: 'Trispace', sans-serif;">{{image.caption}}</p>
-        </div>
 
 
-        <div class="Like">
-          {{image.likes |length}}
-
-
-
-          {%if current_user.id in image.likes|map(attribute="user_id")|list%}
-          <a href="#" onClick=" img_like ( {{ image.id }} )" role="button" data-bs-toggle="button"><i
-              class="fa-solid fa-thumbs-up"></i></a {%else%} <a href="#" onClick=" img_like ( {{ image.id }} )"
-            role="button" data-bs-toggle="button"><i class="fa-regular fa-thumbs-up"></i></a {%endif%} </div>
-
-
-          {% if image.img_poster.id == session["user_id"] or current_user.admin == True%}
-          <button type="button" class="btn btn-danger" onClick="deleteImg ( {{ image.id }} )">Remove image
-
-          </button>
-
-          {% endif %}       
-        </div>
-        <form class="input-group mb-3" method="POST" action="/imgcomment/{{image.id}}">
-          <input type="text" id="text" name="text" class="form-control" placeholder="Comment something!" />
-          <button type="submit" class="btn btn-primary">Comment</button>
-        </form>
-
-        
-         
-      
-    </li>
-    <div class="commentt">
-           
-      {% for comment in image.img_comments %}
-    
-      <div class="col">
-        <div class="font-family: 'Trispace', sans-serif;">{{comment.user.user_name}} </div>
-       
-
-
-        <div class="font-family: 'Assistant', sans-serif;">
-          {{comment.text}}
-        </div>
-
-        <br>
+      <img src="{{url_for('static', filename='images/post/'+image.img_name)}}" class="post_image" alt="img error">
+      <div>
+        <h4 class="caption" style="font-family: 'Trispace', sans-serif;">Caption:</h4>
+        <p class="caption" style="font-family: 'Trispace', sans-serif;">{{image.caption}}</p>
       </div>
-      
-      
-      {%endfor%}
-      
-    </div>
-  
-    {% endfor %}
-  </ul>
+
+
+
+      <span id="likes-count-{{image.id}}">
+        {{ image.likes|length }}</span>
+
+
+      {%if current_user.id in image.likes|map(attribute="user_id")|list%}
+      <i class="fas fa-thumbs-up" id="like-button-{{image.id}}" onclick="img_like({{image.id}})"></i>
+      {%else%}
+      <i class="far fa-thumbs-up" id="like-button-{{image.id}}" onclick="img_like({{image.id}})"></i>
+      {%endif%}
+
+
+      {% if image.img_poster.id == session["user_id"] or current_user.admin == True%}
+      <button type="button" class="btn btn-danger" onClick="deleteImg ( {{ image.id }} )">Remove image
+
+      </button>
+
+      {% endif %}
 </div>
-<link
-  rel="stylesheet"
-  href="{{ url_for('static', filename='css/home.css') }}"
-/>
+<form class="input-group mb-3" method="POST" action="/imgcomment/{{image.id}}">
+  <input type="text" id="text" name="text" class="form-control" placeholder="Comment something!" />
+  <button type="submit" class="btn btn-primary">Comment</button>
+</form>
+
+
+
+
+</li>
+<div class="commentt">
+
+  {% for comment in image.img_comments %}
+
+  <div class="col">
+    <div class="font-family: 'Trispace', sans-serif;">{{comment.user.user_name}} </div>
+
+
+
+    <div class="font-family: 'Assistant', sans-serif;">
+      {{comment.text}}
+    </div>
+
+    <br>
+  </div>
+
+
+  {%endfor%}
+
+</div>
+
+{% endfor %}
+</ul>
+</div>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}" />
 
 
 

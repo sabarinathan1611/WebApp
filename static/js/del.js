@@ -1,7 +1,7 @@
 
 
 function deleteNote(noteId) {
-    alert('Do you wante to delete this post');
+   
     fetch("/delete-note", {
       method: "POST",
       body: JSON.stringify({ noteId: noteId }),

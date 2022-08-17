@@ -13,8 +13,39 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        background: linear-gradient(308deg, rgb(20, 33, 61), rgb(252, 163, 17));
+        background: linear-gradient(308deg, rgb(181, 228, 140),rgba(30, 96, 145));
         
+    }
+    body::before {
+        content: '';
+        position: absolute;
+        top: 64%;
+        right: 80%;
+        bottom: 7px;
+        /* left: -38%; */
+        background: linear-gradient(to top, rgb(181, 228, 140),rgb(30, 96, 145));
+        border-radius: 80%;
+        filter: blur(5px);
+        height: 500px;
+        z-index: -1;
+        opacity: .8;
+        width: 500px;
+    }
+
+    body::after {
+        content: '';
+        position: absolute;
+        top: -25vh;
+        /* right: 38%; */
+        bottom: 7px;
+        left: 80%;
+        background: linear-gradient(to bottom, rgb(181, 228, 140),rgb(30, 96, 145));
+        border-radius: 80%;
+        filter: blur(5px);
+        height: 500px;
+        z-index: -1;
+        opacity: .8;
+        width: 500px;
     }
     
     form {
@@ -34,7 +65,7 @@
         font-size: 50px;
         text-align: center;
         text-shadow: 2px 2px rgba(40, 39, 39, .2);
-        color: rgb(255, 255, 255);
+        color: rgb(242, 232, 207) ;
         margin-bottom: 5%;
         opacity: .8;
     }
@@ -43,7 +74,7 @@
     
     label {
         font-size: 20px;
-        color: rgb(255, 255, 255);
+        color: rgb(242, 232, 207) ;
         margin-left: 8%;
         text-shadow: 2px 2px rgba(40, 39, 39, .2);
         opacity: .8;

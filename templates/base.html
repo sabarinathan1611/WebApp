@@ -66,7 +66,6 @@ integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jI
 
             {% else %}
             <a class="nav-link" id="login" href="{{url_for('auth.login')}}">Login</a>
-            <a class="nav-link" id="login" href="{{url_for('auth.name')}}">Name</a>
             <a class="nav-link" id="signUp" href="{{url_for('auth.sing_up')}}">Sign Up</a>
             {% endif %}
           </div>
@@ -103,7 +102,8 @@ integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jI
 
 
 
-    <div>{% block content %}
+    <div class ="container_base"
+    >{% block content %}
 
       {% endblock %}</div>
 

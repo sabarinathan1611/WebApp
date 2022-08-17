@@ -245,24 +245,26 @@ def post_like(post_id):
 
 
 #img Post Like /img_post-like
-@views.route('/img_post-like', methods=['GET', 'POST'])
+@views.route('/img_post-like/<post_id>', methods=['GET', 'POST'])
 @login_required
-def img_post_like():
-    img = json.loads(request.data)
-    img_id= img["imgId"]
-    image = Image.query.filter_by(id=img_id).first()
-    like=Image_like.query.filter_by(user_id=current_user.id,post_id=img_id).first()
+def img_post_like(post_id):
+    print("Work")
+    image = Image.query.filter_by(id=post_id).first()
+    like=Image_like.query.filter_by(user_id=current_user.id,post_id=post_id).first()
     
     if not image:
         flash("post does not exist",category='error')
     elif like:
+        print("Work unlike")
         db.session.delete(like)
         db.session.commit()
     else:
-        like= Image_like(post_id=img_id,user_id=current_user.id)
+        print("Work like")
+        like= Image_like(post_id=post_id,user_id=current_user.id)
         db.session.add(like)
         db.session.commit()
-    return redirect('/')
+    return jsonify({"likes": len(image.likes), "liked": current_user.id in map(lambda x: x.user_id, image.likes)})
+
 
 #Delete Note
 @views.route('/delete-note', methods=['POST'])
