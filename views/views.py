@@ -44,14 +44,13 @@ def allowed_file(filename):
 def home():
 
     if "user_id" in session:
-        userId = current_user.id
-
-        id = session["user_id"]
-        if id == int(userId):
+        if session["user_id"] == current_user.id:
             user = current_user
             session["user_name"] = user.user_name
             notes = Note.query.order_by(Note.date)
             images = Image.query.order_by(Image.date)
+        else:
+            return redirect(url_for('auth.singup'))
 
 
             

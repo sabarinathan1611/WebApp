@@ -48,9 +48,12 @@ function img_like(imgId){
       
       console.log(data["liked"]);
       if (data["liked"] === true) {
+        console.log("Like");
         likeButton.className = "fas fa-thumbs-up";
-      } else { 
+      } else {
+        console.log("Like");
         likeButton.className = "far fa-thumbs-up";
+
       }
     })
     .catch((e) => alert("Could not like post."));

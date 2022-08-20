@@ -2,3 +2,5 @@ Flask
 SQLAlchemy
 werkzeug
 wtforms
+flask_login
+

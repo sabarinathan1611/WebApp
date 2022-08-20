@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask import request
 import smtplib
 
-
+from . import config
 from . import db
 from .models import User, Image
 from werkzeug.security import generate_password_hash, check_password_hash  #convert password to hash value
@@ -57,7 +57,7 @@ def send_mail(email,subject,body):
                 message = f'Subject:{subject}\n\n{body}'
                 server = smtplib.SMTP("smtp.gmail.com", 587)
                 server.starttls()
-                server.login("your Email", "Password")
+                server.login(config.get("EMAIL"), config.get("EMAIL_PASSWORD"))
                 server.sendmail("your Email", email,
                                 message)
             except smtplib.SMTPException as error:

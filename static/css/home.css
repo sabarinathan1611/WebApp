@@ -21,5 +21,17 @@
 	margin-right: calc(-.5 * var(--bs-gutter-x));
 	margin-left: calc(-.5 * var(--bs-gutter-x));
 	border-bottom: 1px solid;
-	border-block-color: rgb(19, 14, 25);
+	border-block-color: rgb(134, 61, 223);
 }
+
+.profile-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 500px;
+	margin: 5px;
+  }
+
+.post-image {
+    width: 500px;
+    height: 500px;
+  }

@@ -2,12 +2,15 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_login import LoginManager
-from flask_ckeditor import CKEditor
+import json
 
 
 
-
-
+def config():
+    with open('./config.json') as config_file:
+        config = json.load(config_file)
+        config_file.close
+        return config
 db = SQLAlchemy()
 DB_NAME = "database.db"
 
@@ -16,15 +19,15 @@ def create_app():
     app = Flask(__name__,
                 template_folder='../templates',
                 static_folder='../static')
-    app.config['SECRET_KEY'] = 'hjshjhdjah kjshkjdhjs'
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
+    app.config['SECRET_KEY'] = config().get('SECRET_KEY')
+    app.config['SQLALCHEMY_DATABASE_URI'] =  config().get('SQLALCHEMY_DATABASE_URI')
 
     app.config['UPLOAD_FOLDER'] = "static/images/"
     app.config['POST_FOLDER'] = "static/images/post/"
     
     
-    app.config['RECAPTCHA_PUBLIC_KEY']='6LfmgGghAAAAAJysT62qcRna1JhE9t2VBUqH6Tse'
-    app.config['RECAPTCHA_PRIVATE_KEY'] ='6LfmgGghAAAAALXblkN7LJOqWvqzURb7kPgOcmW_'
+    app.config['RECAPTCHA_PUBLIC_KEY']=config().get('RECAPTCHA_PUBLIC_KEY')
+    app.config['RECAPTCHA_PRIVATE_KEY'] =config().get('RECAPTCHA_PRIVATE_KEY')
     app.config['TESTING']=True
     db.init_app(app)
 
@@ -37,7 +40,7 @@ def create_app():
     from .models import User, Note, Image
 
     create_database(app)
-    ckeditor = CKEditor(app)
+    # ckeditor = CKEditor(app)
 
     
 

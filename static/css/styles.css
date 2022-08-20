@@ -13,7 +13,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        background: linear-gradient(308deg, rgb(181, 228, 140),rgba(30, 96, 145));
+        background: linear-gradient(308deg, #b5e48c,#1e6091);
         
     }
     body::before {
@@ -23,9 +23,9 @@
         right: 80%;
         bottom: 7px;
         /* left: -38%; */
-        background: linear-gradient(to top, rgb(181, 228, 140),rgb(30, 96, 145));
+        background: linear-gradient(122deg, #b5e48c,#1e6091);
         border-radius: 80%;
-        filter: blur(5px);
+        filter: blur(3px);
         height: 500px;
         z-index: -1;
         opacity: .8;
@@ -39,7 +39,7 @@
         /* right: 38%; */
         bottom: 7px;
         left: 80%;
-        background: linear-gradient(to bottom, rgb(181, 228, 140),rgb(30, 96, 145));
+        background: linear-gradient(122deg, #b5e48c,#1e6091);
         border-radius: 80%;
         filter: blur(5px);
         height: 500px;
@@ -51,21 +51,21 @@
     form {
         box-shadow: 0 8px 32px 0 rgb(31 38 135 / 37%);
         border-radius: 30px;
-        border-left: 1px solid rgba(255, 255, 255, .3);
-        border-top: 1px solid rgba(255, 255, 255, .3);
+        border-left: 1px solid #eae3e39e;
+        border-top: 1px solid #eae3e39e;
         width: 25rem;
         height: 28rem;
         display: flex;
         flex-direction: column;
-        background: rgba(255, 255, 255, 0.06)
+        background: #ffffff0f
         
     }
     
     h3 {
         font-size: 50px;
         text-align: center;
-        text-shadow: 2px 2px rgba(40, 39, 39, .2);
-        color: rgb(242, 232, 207) ;
+        text-shadow: 2px 2px #28272733;
+        color: #f2e8cf;
         margin-bottom: 5%;
         opacity: .8;
     }
@@ -74,16 +74,16 @@
     
     label {
         font-size: 20px;
-        color: rgb(242, 232, 207) ;
+        color: #f2e8cf;
         margin-left: 8%;
-        text-shadow: 2px 2px rgba(40, 39, 39, .2);
+        text-shadow: 2px 2px #28272733;
         opacity: .8;
     }
     .singup_link{
         font-size: 20px;
         color: rgb(0, 0, 0);
         margin-left: 8%;
-        text-shadow: 2px 2px rgba(40, 39, 39, .2);
+        text-shadow: 2px 2px #28272733;
         opacity: .5;
         text-decoration: none;
         width: 20%;
@@ -111,8 +111,8 @@
         border: none;
         outline: none;
         background: transparent;
-        color: rgba(255, 255, 255, 0.787);
-        border-bottom: 2px solid rgba(255, 255, 255, .3);
+        color: #28272733;
+        border-bottom: 2px solid #ffffff4d;
         opacity: .9 !important; 
     
     }
@@ -123,23 +123,23 @@
         margin: 3% auto;
         color: white;
         font-size: 15px;
-        background: rgba(255, 255, 255, .3);
+        background: #ffffff4d;
         padding: 10px 30px;
         border: none;
         border-radius: 25px;
-        text-shadow: 2px 2px rgba(40, 39, 39, .2);
+        text-shadow: 2px 2px #28272733;
     
     }
     
     .login:hover {
-        box-shadow: 3px 3px 5px rgba(135, 31, 31, 0.37);
+        box-shadow: 3px 3px 5px #871f1f5e;
     }
     
     .navbar-contatiner {
         opacity: 10;
         width: auto;
         height: 85px;
-        background-color: rgb(153, 59, 103);
+        background-color: #993b67;
         top: 0;
         right: 55%;
         position: absolute;
@@ -169,7 +169,7 @@
     }
     .navbar-brand{
         background-color: #000000;
-        color: rgb(255, 255, 255) !important;
+        color: #ffffff !important;
         border-radius: 11px;
     }
 

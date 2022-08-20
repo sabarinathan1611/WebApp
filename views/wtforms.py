@@ -1,12 +1,13 @@
 from distutils.text_file import TextFile
 from email.policy import default
 from tokenize import String
+from django.forms import IntegerField
 from flask_login import current_user
 from flask_wtf import FlaskForm,RecaptchaField
-from wtforms import *
+from wtforms import EmailField,StringField,PasswordField,SubmitField,SelectField,IntegerField,TextAreaField
 from wtforms.validators import *
-from flask_wtf.file import FileField, FileAllowed, FileRequired
-from flask_ckeditor import CKEditorField
+from flask_wtf.file import FileField
+
 
 
 class SingupForm(FlaskForm):

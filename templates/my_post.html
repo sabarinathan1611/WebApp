@@ -12,89 +12,187 @@
   }
 </style>
 
-<div class="shadow-lg p-3 mb-5 bg-body rounded">
 
-  <ul class="list-group list-group-flush" id="notes">
-    {% for note in notes %}
-    <li class="list-group-item">
-      
-      <strong> <img src="{{url_for('static', filename='images/'+note.poster.profile_pic)}}"   class="profile_img" alt="img error">{{note.poster.user_name}}</strong>
-        
-        <p> <b>Post:</b> 
-          {%if  note.edited == True %}
-          <div class="edited" style="font-family: 'Poppins', sans-serif;"><small>(edited)</small></div>
-          {%endif%}
-          {{ note.post }}</p>
+<div class="post-container">
+  <div class="text-post">
+    <div class="post">
+      <ul class="list-group list-group-flush" id="notes">
+        {% for note in notes %}
+        <li class="list-group-item">
 
-          {{note.likes |length}}
-         
+          <div class="username" style="    font-family: 'Trispace', sans-serif;"> <img
+              src="{{url_for('static', filename='images/'+note.poster.profile_pic)}}" class="profile-img"
+              alt="img error">{{note.poster.user_name}}
+          </div>
 
+          <div class="post-content">
 
-          {%if current_user.id in note.likes|map(attribute="user_id")|list%}
-          <a href="/posts"onClick="like ( {{ note.id }} )"  role="button" data-bs-toggle="button"><i class="fa-solid fa-thumbs-up" ></i></a>
-          {%else%}
-          <a href="/posts"onClick="like ( {{ note.id }} )"  role="button" data-bs-toggle="button"><i class="fa-regular fa-thumbs-up"></i></a>
+            {%if note.edited == True %}
+            <div class="edited" style="font-family: 'Poppins', sans-serif;"><small>(edited)</small></div>
+
+            {%endif%}
+            <p class="post" style="font-family: 'Gantari', sans-serif;">{{ note.post }}
+            <p>
+
+          </div>
+
           
-          {%endif%}
-        
-         
+            
           
-      {% if note.poster.id == session["user_id"] or  current_user.admin == True%}
-      <button type="button" class="btn btn-danger"  onClick="deleteNote ( {{ note.id }} )">Remove Post
-        
-      </button>
-      <a href = "{{url_for('views.edit_note',id=note.id)}}">Edit</a>
+          <div class="likes">
+            <span id="likes-count-{{note.id}}">
+              {{ note.likes|length }}
+            </span>
+            {%if current_user.id in note.likes|map(attribute="user_id")|list%}
+
+            <i class="fas fa-thumbs-up" id="like-button-{{note.id}}" onclick="like({{note.id}})"></i>
+            {%else%}
+            <i class="far fa-thumbs-up" id="like-button-{{note.id}}" onclick="like({{note.id}})"></i>
+
+            {%endif%}
+          </div>
+
+          <div class="comment">
+
+            {% for comment in note.comments %}
+
+            <div class="col">
+              <div class="font-family: 'Trispace', sans-serif;">{{comment.user.user_name}} </div>
 
 
 
+              <div class="font-family: 'Assistant', sans-serif;">
+                {{comment.text}}
+              </div>
 
-      {% endif %}
-    </li>
-    {% endfor %}
-  </ul>
+              <br>
+            </div>
+            {%endfor%}
+          </div>
+          <br>
+          <div class="comment-form">
+
+            <form class="input-group mb-3" method="POST" action="/comment/{{note.id}}">
+              <input type="text" id="text" name="text" class="form-control" placeholder="Comment something!" />
+              <button type="submit" class="btn btn-primary">Comment</button>
+            </form>
+          </div>
+          <br>
+          <div class="time">{{note.date.date()}}</div>
+          <div class="btns">
+
+            {% if note.poster.id == session["user_id"] or current_user.admin == True%}
+            <button type="button" class="btn btn-danger" onClick="deleteNote ( {{ note.id }} )">Remove Post
+
+            </button>
+            <a class="btn btn-primary" href="{{url_for('views.edit_note',id=note.id)}}">Edit</a>
+          </div>
+          {% endif %}
+        </li>
+        {% endfor %}
+    </div>
+    </ul>
   </div>
 
 
 
-<div class="shadow p-3 mb-5 bg-body rounded">
 
-    <ul class="list-group list-group-flush" id="notes">
-      {% for image in images %}
-      <li class="list-group-item">
-        <div class="img"> 
-          <img src="{{url_for('static', filename='images/'+image.img_poster.profile_pic)}}"   class="profile_img" alt="img error"> {{image.img_poster.user_name}} 
-          
-        </div>
-          <p> <b>Post:</b> 
-            <img src="{{url_for('static', filename='images/post/'+image.img_name)}}"   class="post_image" alt="img error">
-            <h1>caption:
-              {{image.caption}}</h1>
-          </p>
-          <div class="Like">
-          {{image.likes |length}}
-         
+  <div class="post-container">
+
+    <div class="img-post">
+      <div class="post">
+        <ul class="list-group list-group-flush" id="notes">
+
+          {% for image in images %}
+            <li class="list-group-item">
+
+              <div class="img">
+                <img src="{{url_for('static', filename='images/'+image.img_poster.profile_pic)}}" class="profile-img"
+                  alt="img error"> {{image.img_poster.user_name}}
+
+              </div>
+              <p class="caption" style="font-family: 'Trispace', sans-serif;"> Post: </p>
+
+              <div class="post-content">
+                <img src="{{url_for('static', filename='images/post/'+image.img_name)}}" class="post-image" alt="img error">
+                <div class="caption">
+                  <h4 class="caption" style="font-family: 'Trispace', sans-serif;">Caption:</h4>
+                  <p class="caption" style="font-family: 'Trispace', sans-serif;">{{image.caption}}</p>
+                </div>
+              </div>
+
+              <div class="time">{{image.date.date()}}</div>
+              <div class="likes">
+                  <span id="likes-count-{{image.id}}">
+                    {{ image.likes|length }}</span>
 
 
-          {%if current_user.id in image.likes|map(attribute="user_id")|list%}
-          <a href="#"onClick=" img_like ( {{ image.id }} )"  role="button" data-bs-toggle="button"><i class="fa-solid fa-thumbs-up" ></i></a
-          {%else%}
-          <a href="#"onClick=" img_like ( {{ image.id }} )"  role="button" data-bs-toggle="button"><i class="fa-regular fa-thumbs-up"></i></a
-          
-          {%endif%}
-        </div>
+                  {%if current_user.id in image.likes|map(attribute="user_id")|list%}
+                  <i class="fas fa-thumbs-up" id="like-button-{{image.id}}" onclick="img_like({{image.id}})"></i>
+                  {%else%}
+                  <i class="far fa-thumbs-up" id="like-button-{{image.id}}" onclick="img_like({{image.id}})"></i>
+                  {%endif%}
+              </div>
+              <div class="btns">
+              {% if image.img_poster.id == session["user_id"] or current_user.admin == True%}
+              <button type="button" class="btn btn-danger" onClick="deleteImg ( {{ image.id }} )">Remove image
+
+              </button>
+
+              {% endif %}
+              <div class="comment">
+
+                {% for comment in image.comments %}
+    
+                <div class="col">
+                  <div class="font-family: 'Trispace', sans-serif;">{{comment.user.user_name}} </div>
+    
+    
+    
+                  <div class="font-family: 'Assistant', sans-serif;">
+                    {{comment.text}}
+                  </div>
+    
+                  <br>
+                </div>
+    
+    
+                {%endfor%}
+    
+    
+    
+    
+              </div>
+
+            </div>
+              <div class="comment-form">
+                <form class="input-group mb-3" method="POST" action="/imgcomment/{{image.id}}">
+                  <input type="text" id="text" name="text" class="form-control" placeholder="Comment something!" />
+                  <button type="submit" class="btn btn-primary">Comment</button>
+                </form>
+              </div>
 
 
-        {% if image.img_poster.id == session["user_id"] or current_user.admin == True%}
-        <button type="button" class="btn btn-danger" onClick="deleteImg ( {{ image.id }} )">Remove image
-        
-        </button>
-        
-        {% endif %}
-      </li>
-      {% endfor %}
-    </ul>
+
+
+<br>
+              
+
+                  
+
+
+
+            </li>
+          {% endfor %}
+      </div>
+       </ul>
+
     </div>
+  </div>
 
+
+</div>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}" />
 
 
 {% endblock %}
