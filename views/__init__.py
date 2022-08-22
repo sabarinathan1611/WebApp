@@ -23,8 +23,8 @@ def create_app():
     app.config['POST_FOLDER'] = "static/images/post/"
     
     
-    app.config['RECAPTCHA_PUBLIC_KEY']='6LfmgGghAAAAAJysT62qcRna1JhE9t2VBUqH6Tse'
-    app.config['RECAPTCHA_PRIVATE_KEY'] ='6LfmgGghAAAAALXblkN7LJOqWvqzURb7kPgOcmW_'
+    app.config['RECAPTCHA_PUBLIC_KEY']='recaptcha public key'
+    app.config['RECAPTCHA_PRIVATE_KEY'] ='recaptcha private key'
     app.config['TESTING']=True
     db.init_app(app)
 
