@@ -57,8 +57,13 @@ def send_mail(email,subject,body):
                 message = f'Subject:{subject}\n\n{body}'
                 server = smtplib.SMTP("smtp.gmail.com", 587)
                 server.starttls()
+
                 server.login("config.get()", "config.get()")
                 server.sendmail("your Email", email,
+
+                server.login("Your Email", "Your Email Password")
+                server.sendmail("sabarinathan.project@gmail.com", email,
+
                                 message)
             except smtplib.SMTPException as error:
                 flash(f"{error}",
