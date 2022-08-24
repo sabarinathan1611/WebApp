@@ -23,7 +23,7 @@ content%} {{msg}}
 
 
 <form action="{{url_for('auth.confirm')}}" method="POST">
-  <h1>OOTp</h1>
+  <h1>{{session["Otp"]}}</h1>
   <div class="form-group">
     <div class="form-group">
       {{form.hidden_tag()}}

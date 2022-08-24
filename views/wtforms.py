@@ -1,7 +1,3 @@
-from distutils.text_file import TextFile
-from email.policy import default
-from tokenize import String
-from django.forms import IntegerField
 from flask_login import current_user
 from flask_wtf import FlaskForm,RecaptchaField
 from wtforms import EmailField,StringField,PasswordField,SubmitField,SelectField,IntegerField,TextAreaField
@@ -41,11 +37,10 @@ class LoginForm(FlaskForm):
     
     
 class Createpost(FlaskForm):
-    
-    content=TextAreaField("content",validators=[DataRequired()])
-    
-    submit=SubmitField("Post")
-    
+    post      = TextAreaField("Post")
+    image     = FileField()
+    submit    = SubmitField("Post")
+
 
 class ImageForm(FlaskForm):
     
@@ -62,21 +57,25 @@ class Profileupdate(FlaskForm):
     
 class Editadmin(FlaskForm):
     email     = EmailField("Email",validators=[InputRequired()])
-    password1  = PasswordField("Password")
+    password1 = PasswordField("Password")
     password2 = PasswordField("Password(confirm)")
     fullname  = StringField("Full Name",validators=[DataRequired("Name Required"),length(min=4,max=20,message="Must be between 5 and 20 charactres")])
     submit    = SubmitField("Updat Profile")
     
 class Useredit(FlaskForm):
-    username = StringField("Username",validators=[DataRequired("Username Required"),length(min=4,max=12,message="Must be between 5 charactres")])
+    username  = StringField("Username",validators=[DataRequired("Username Required"),length(min=4,max=12,message="Must be between 5 charactres")])
     email     = EmailField("Email",validators=[InputRequired()])
     fullname  = StringField("Full Name",validators=[DataRequired("Name Required"),length(min=4,max=20,message="Must be between 5 and 20 charactres")])
     bio       = StringField("Bio",validators=[InputRequired()])
-    gender = SelectField('gender', choices = [('Female', 'Female'), ('Male', 'Male'),('Other','Other')])
-    submit=SubmitField("Submit")
+    gender    = SelectField('gender', choices = [('Female', 'Female'), ('Male', 'Male'),('Other','Other')])
+    submit    =SubmitField("Submit")
     fullname  = StringField("Full Name",validators=[DataRequired("Name Required"),length(min=4,max=20,message="Must be between 5 and 20 charactres")])
     submit    = SubmitField("Updat Profile")
     
 class SearchForm(FlaskForm):
-    search = StringField("Serach",validators=[InputRequired()])
+    search    = StringField("Serach",validators=[InputRequired()])
     submit    = SubmitField("Search")
+    
+#class PostForm(FlaskForm):
+    
+    

@@ -5,7 +5,7 @@ import smtplib
 
 from . import config
 from . import db
-from .models import User, Image
+from .models import User, Post
 from werkzeug.security import generate_password_hash, check_password_hash  #convert password to hash value
 from random import randint
 from flask_login import login_required, login_user, logout_user, current_user
@@ -57,7 +57,7 @@ def send_mail(email,subject,body):
                 message = f'Subject:{subject}\n\n{body}'
                 server = smtplib.SMTP("smtp.gmail.com", 587)
                 server.starttls()
-                server.login(config.get("EMAIL"), config.get("EMAIL_PASSWORD"))
+                server.login("config.get()", "config.get()")
                 server.sendmail("your Email", email,
                                 message)
             except smtplib.SMTPException as error:

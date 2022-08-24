@@ -6,7 +6,7 @@ import uuid
 from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
 from flask_login import login_required, current_user
 from flask import session
-from .models import Image, Image_like, User, Note,Post_like,Admin,Comment,ImageComment
+from .models import  Post, User, Admin,Comment,Post_like
 from . import db
 from . import create_app
 from werkzeug.utils import secure_filename  #for secure file
@@ -47,8 +47,8 @@ def home():
         if session["user_id"] == current_user.id:
             user = current_user
             session["user_name"] = user.user_name
-            notes = Note.query.order_by(Note.date)
-            images = Image.query.order_by(Image.date)
+            posts = Post.query.order_by(Post.date)
+            
         else:
             return redirect(url_for('auth.singup'))
 
@@ -57,18 +57,17 @@ def home():
     else:
         return redirect(url_for('auth.login'))
 
-    return render_template('home.html',images=images,notes=notes)
+    return render_template('home.html',posts=posts)
 
 
 #My post
-@views.route('/my_post', methods=['GET', 'POST'])
+@views.route('/my-post', methods=['GET', 'POST'])
 @login_required
 def my_post():
     
-    image = current_user.images
-    print(image)
-    note = current_user.notes
-    return render_template('my_post.html', notes=note, images=image)
+
+    user=User.query.get_or_404(current_user.id)
+    return render_template('my_post.html', posts=user.posts)
 
 
 
@@ -76,92 +75,83 @@ def my_post():
 @views.route('/createpost', methods=['GET', 'POST'])
 @login_required
 def createpost():
+    
     form= Createpost()
-    if form.validate_on_submit():
-                note = request.form.get('content')
-                if len(note) < 1:
-                    flash('Note is too short!', category='error')
+    if request.method == 'POST':
+
+                pic = request.files['image']
+                post = request.form.get('post')
+                print("PIc:",len(pic.filename))
+                print("post",post)
+
+                if len(pic.filename) < 1 and  len(post) < 1 :
+                    flash('Error')
+                    return redirect('/')
+                
+                
                 else:
-                    new_note = Note(post=note, user_id=current_user.id)
-                    db.session.add(new_note)
-                    db.session.commit()
-                    flash('NOTE created!', category='success')
+                    if len(pic.filename) > 1:
+                        if  allowed_file(pic.filename) == False:
+                            flash("Allowed file 'png', 'jpg', 'jpeg', 'webp','raw','svg'")
+                        else:
+                            print(allowed_file(pic.filename))
+
+                            filename = secure_filename(pic.filename)
+
+                            random_num = str(randint(0000000000, 9999999999))
+
+                            pic_name = str(uuid.uuid1()) + "_" + random_num + "_" + filename
+                            print("filename:", pic_name)
+
+                            pic.save(os.path.join(app.config['POST_FOLDER'], pic_name))
+
+                            mimetype = pic.mimetype
+                            new_post = Post(post=post, user_id=current_user.id,img_name=pic_name,mimetype=mimetype)
+                            db.session.add(new_post)
+                            db.session.commit()
+                            flash('POST created!', category='success')
+                        return redirect('/')
+                    elif len(post) > 1 :
+                        new_post = Post(post=post, user_id=current_user.id,)
+                        db.session.add(new_post)
+                        db.session.commit()
+                        flash('POST created!', category='success')
                     return redirect('/')
     return render_template('creat_post.html',form=form)
 
-@views.route('/upload_img', methods=['POST'])
-@login_required
-def upload_img():
-    pic = request.files['pic']
-    caption = request.form.get('caption')
-    print("caption:", caption)
-    if pic.filename == '':
-        flash('No image selected for uploading')
-        return redirect('/potos')
-
-    if pic and allowed_file(pic.filename):
-
-        user_id = current_user.id
-
-        filename = secure_filename(pic.filename)
-
-        random_num = str(randint(0000000000, 9999999999))
-
-        pic_name = str(uuid.uuid1()) + "_" + random_num + "_" + filename
-        print("filename:", pic_name)
-
-        pic.save(os.path.join(app.config['POST_FOLDER'], pic_name))
-
-        mimetype = pic.mimetype
-        # size=pic.bytes
-        # print("size:",size)
-        print("MIMe: ", mimetype)
-
-        photo = Image(mimetype=mimetype,
-                      img_name=pic_name,
-                      caption=caption,
-                      user_id=user_id)
-        db.session.add(photo)
-        db.session.commit()
-        flash('Image added !', category='success')
-    else:
-        flash('Allowed image types are - png, jpg, jpeg, gif')
-
-    return redirect('/')
-
 
 # editpage
-@views.route('/edit_note/<int:id>', methods=['POST','GET'])
+@views.route('/edit-note/<int:id>', methods=['POST','GET'])
 @login_required
 def edit_note(id):
     form = Createpost()
-    note = Note.query.get(id)
-    form.content.data=note.post
+    post = Post.query.get(id)
+    form.post.data=post.post
     
-    if current_user.id == note.user_id or current_user.admin == True:   
+    if current_user.id == post.user_id or current_user.admin == True:   
         
-        return render_template('editpost.html',note=note,form=form)
+        return render_template('editpost.html',post=post,form=form)
     
     else:
         flash("you can't Edit other user post",category='error')
         return redirect(url_for('views.home'))
 
 #Update post
-@views.route('/update_note/<int:id>', methods=['POST','GET'])
+@views.route('/update-note/<int:id>', methods=['POST','GET'])
 @login_required
 def update_note(id):
-    note = Note.query.get(id)
-    if current_user.id == note.user_id or current_user.admin == True:    
+    post = Post.query.get(id)
+    if current_user.id == post.user_id or current_user.admin == True:    
         
         if request.method == 'POST':
-            post = request.form.get('content')
-            print(post)
-            if len(post) < 1 :
+            new_post = request.form.get('post')
+            print(new_post)
+            if len(new_post) < 1 :
                 flash('Note is too short!', category='error')
-                return redirect(url_for('views.edit_note',id=note.id))
+                return redirect(url_for('views.edit_note',id=post.id))
             else:
                 print("yessss")
-                Note.query.filter_by(id=note.id).update(dict(post=post,edited=True))
+                Post.query.filter_by(id=post.id).update(dict(post=new_post,edited=True))
                 db.session.commit()
                 flash('NOTE update!', category='success')
     return redirect('/')
@@ -171,7 +161,7 @@ def update_note(id):
 @login_required
 def comment (post_id):
     print("postId:",post_id)
-    note = Note.query.filter_by(id = post_id).first()
+    note = Post.query.filter_by(id = post_id).first()
     text = request.form.get('text')
     print(text)
     if not text :
@@ -186,30 +176,7 @@ def comment (post_id):
         else:
             flash('Post does not exist.', category='error')
     return redirect('/')
-
-#imagecomment
-@views.route("/imgcomment/<post_id>",methods=['POST','GET'])
-@login_required
-def imgcomment (post_id):
-    print("postId:",post_id)
-    image = Image.query.filter_by(id = post_id).first()
-    text = request.form.get('text')
-    print(text)
-    if not text :
-        
-        flash("empty comment ",category='error')
-    else:
-        if image:
-            comment = ImageComment(
-            text=text, user_id=current_user.id, post_id=image.id)
-            db.session.add(comment)
-            db.session.commit()
-        else:
-            flash('Post does not exist.', category='error')
-    return redirect('/')
-
-
-    
+   
     
 #like
 @views.route("/like-post/<post_id>",methods=['POST','GET'])
@@ -218,7 +185,7 @@ def post_like(post_id):
     # note = json.loads(request.data)
     # post_id = note['noteId']
     
-    post =Note.query.filter_by(id=post_id).first()
+    post =Post.query.filter_by(id=post_id).first()
     like=  Post_like.query.filter_by(user_id=current_user.id,post_id=post_id).first()
     print("work1")
     if not post:
@@ -241,41 +208,18 @@ def post_like(post_id):
     return jsonify({"likes": len(post.likes), "liked": current_user.id in map(lambda x: x.user_id, post.likes)})
 
 
-
-
-#img Post Like /img_post-like
-@views.route('/img_post-like/<post_id>', methods=['GET', 'POST'])
-@login_required
-def img_post_like(post_id):
-    print("Work")
-    image = Image.query.filter_by(id=post_id).first()
-    like=Image_like.query.filter_by(user_id=current_user.id,post_id=post_id).first()
-    
-    if not image:
-        flash("post does not exist",category='error')
-    elif like:
-        print("Work unlike")
-        db.session.delete(like)
-        db.session.commit()
-    else:
-        print("Work like")
-        like= Image_like(post_id=post_id,user_id=current_user.id)
-        db.session.add(like)
-        db.session.commit()
-    return jsonify({"likes": len(image.likes), "liked": current_user.id in map(lambda x: x.user_id, image.likes)})
-
-
 #Delete Note
 @views.route('/delete-note', methods=['POST'])
 @login_required
 def delete_note():
-    print("note")
-    note = json.loads(request.data)
-    noteID = note['noteId']
-    print("type:", noteID)
-    note = Note.query.get(noteID)
-    comments = note.comments
-    likes=note.likes
+  
+    post = json.loads(request.data)
+    post_id = post['postId']
+    
+    post = Post.query.get(post_id)
+    comments = post.comments
+    likes=post.likes
+        
     for like in likes:
         id = like.id
         post_like=Post_like.query.get(id)
@@ -287,51 +231,18 @@ def delete_note():
         db.session.delete(post_comment)
         db.session.commit()
         
+    if post.img_name != None:
+        path = app.config['POST_FOLDER'] + post.img_name
+        os.remove(path)
         
 
-    if note:
+    if post:
 
-        if note.user_id == current_user.id or session["user_id"] == 1:
-            db.session.delete(note)
+        if post.user_id == current_user.id or session["user_id"] == 1:
+            db.session.delete(post)
             db.session.commit()
     return jsonify()
 
-
-#Delete Photo
-@views.route('/delete-Img', methods=['POST'])
-@login_required
-def delete_img():
-    user = current_user
-
-    img = json.loads(request.data)
-    imgID = img['imgId']
-    img = Image.query.get(imgID)
-
-    namee = img.img_name
-    path = app.config['POST_FOLDER'] + namee
-    
-    likes = img.likes
-    comments = img.comments
-    for like in likes:
-        id = like.id
-        image_like=Image_like.query.get(id)
-        db.session.delete(image_like)
-        db.session.commit()
-        
-    for comment in comments:
-        id = comment.id 
-        post_comment=ImageComment.query.get(id)
-        db.session.delete(post_comment)
-        db.session.commit()
-        
-    print("nameeeeee:   ", namee)
-    if img:
-        if img.user_id == user.id or session["user_id"] == 1:
-            db.session.delete(img)
-            db.session.commit()
-            os.remove(path)
-
-    return redirect('/')
 
 
 #profile
@@ -418,7 +329,7 @@ def profile():
 
 
 #Remove Profile
-@views.route('/remove_Profile_photo', methods=['POST', 'GET'])
+@views.route('/remove-Profile_photo', methods=['POST', 'GET'])
 @login_required
 def remove_Profile_photo ():
     if current_user.profile_pic == 'Default/Default.jpeg':
@@ -438,6 +349,7 @@ def remove_Profile_photo ():
 @login_required
 def admin_login():   
     form = LoginForm()
+    
     
 
     
@@ -509,7 +421,7 @@ def admin():
 
 
 #add admin
-@views.route('/add_admin', methods=['POST'])
+@views.route('/add-admin', methods=['POST'])
 @login_required
 def add_admin():
     if current_user.id ==1:
@@ -533,7 +445,7 @@ def add_admin():
     
 #admin_details
 
-@views.route('/admin_details', methods=['POST', 'GET'])
+@views.route('/admin-details', methods=['POST', 'GET'])
 @login_required
 def admin_details(): 
     form=Editadmin()
@@ -582,7 +494,7 @@ def admin_details():
                         
             return render_template('editadmin.html',admin=admin,form=form)
 #remove admin
-@views.route('remove_admin',methods=['POST'])
+@views.route('remove-admin',methods=['POST'])
 @login_required
 def remove_admin():
     user = json.loads(request.data)
@@ -631,7 +543,7 @@ def search():
 
 
 #admin delete user
-@views.route('/delete_user', methods=['POST'])
+@views.route('/delete-user', methods=['POST'])
 @login_required
 def delete_user():
     if f"admin_login{current_user.id}" in session  or current_user.id == 1: 
@@ -639,56 +551,39 @@ def delete_user():
             
             user = json.loads(request.data)
             userID = user['userId']
-
+            print("id",userID)
             user = User.query.get(userID)
-            print(user)
+            posts = user.posts
             
-            images = user.images
-            notes = user.notes
-            
-            for image in images:
-                path = app.config['POST_FOLDER'] + image.img_name
-                id = image.id
-                photo = Image.query.get(id)
-                image_likes=photo.likes
-                comments = photo.comments
-                for comment in comments:
-                    id =comment.id
-                    imgComment=ImageComment.query.get(id)
-                    db.session.delete(imgComment)
-                    db.session.commit()
-                for like in image_likes:
-                    id = like.id
-                    image_like=Image_like.query.get(id)
-                    db.session.delete(image_like)
-                    db.session.commit()
+            for post in posts:
                 
                 
-
-                db.session.delete(photo)
-                db.session.commit()
-
-                os.remove(path)
-
-            for note in notes:
-                id = note.id
-                note = Note.query.get(id)
+                id = post.id
+                
+                note = Post.query.get_or_404(id)
                 post_likes=note.likes
                 comments=note.comments
             
                 for like in post_likes:
-                                id = like.id
-                                post_like=Post_like.query.get(id)
-                                db.session.delete(post_like)
-                                db.session.commit()
+                    print("likes:",like)
+                    id = like.id
+                    post_like=Post_like.query.get(id)
+                    db.session.delete(post_like)
+                    db.session.commit()
                                 
                 for comment in comments:
-                        id = comment.id 
-                        post_comment=Comment.query.get(id)
-                        db.session.delete(post_comment)
-                        db.session.commit()
-                
-                db.session.delete(note)
+                    print("comment:",comment)
+                    id = comment.id 
+                    post_comment=Comment.query.get(id)
+                    db.session.delete(post_comment)
+                    db.session.commit()
+                if post.img_name != None:
+                    print("imgage2")
+                    
+                    path = app.config['POST_FOLDER'] + post.img_name
+                    os.remove(path)
+                    
+                db.session.delete(post)
                 db.session.commit()
 
             if user:
@@ -700,13 +595,14 @@ def delete_user():
                     db.session.commit()
                     os.remove(path)
                 elif img == "Default/Default.jpeg":
+                    print("workii")
                     db.session.delete(user)
                     db.session.commit()
 
         return redirect('/admin')
 
 #admin edit user
-@views.route('/edit_user/<int:id>', methods=['POST','GET'])
+@views.route('/edit-user/<int:id>', methods=['POST','GET'])
 @login_required
 def edit_user(id):
     form=Useredit()
@@ -762,14 +658,15 @@ def edit_user(id):
 @views.route('/createuser', methods=['POST', 'GET'])
 @login_required
 def createuser():
+    form = SingupForm()
     if f"admin_login{current_user.id}" in session  or current_user.id == 1: 
         if current_user.admin  == True and session[f"admin_login{current_user.id}"] == current_user.id or current_user.id == 1:
-            if request.method == 'POST':
-                email = request.form.get('email')
-                user_name = request.form.get('UserName')
-                password1 = request.form.get('password1')
-                password2 = request.form.get('password2')
-                gender = request.form.get('gender')
+            if form.validate_on_submit() and request.method == 'POST':
+                email = form.email.data
+                user_name = form.username.data
+                password1 = form.password1.data
+                password2 = form.password2.data
+                gender = form.gender.data
                 
                 user = User.query.filter_by(email=email).first()
                 userName = User.query.filter_by(user_name=user_name).first()

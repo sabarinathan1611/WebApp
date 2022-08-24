@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_login import LoginManager
 import json
+from flask_migrate import Migrate
 
 
 
@@ -11,6 +12,7 @@ def config():
         config = json.load(config_file)
         config_file.close
         return config
+    
 db = SQLAlchemy()
 DB_NAME = "database.db"
 
@@ -20,7 +22,7 @@ def create_app():
                 template_folder='../templates',
                 static_folder='../static')
     app.config['SECRET_KEY'] = config().get('SECRET_KEY')
-    app.config['SQLALCHEMY_DATABASE_URI'] =  config().get('SQLALCHEMY_DATABASE_URI')
+    app.config['SQLALCHEMY_DATABASE_URI'] =f"sqlite:///{DB_NAME}"
 
     app.config['UPLOAD_FOLDER'] = "static/images/"
     app.config['POST_FOLDER'] = "static/images/post/"
@@ -37,7 +39,7 @@ def create_app():
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
 
-    from .models import User, Note, Image
+    from .models import User, Post
 
     create_database(app)
     # ckeditor = CKEditor(app)

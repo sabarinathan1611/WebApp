@@ -5,43 +5,26 @@
     
     
     {% endif %} {% if "user_name" in session %}
-    <h1>Hell {{session["user_name"]}}</h1>
+    <h1>Hello {{session["user_name"]}}</h1>
     
     {% endif %}
-    
-    <form method="post"
-    action="{{url_for('views.createpost')}}">
-    {{ form.hidden_tag() }}
-    {{form.content.label}}
-    {{form.content(cols="30",rows="10",class="form-control",placeholder="Here you can  write your notes")}}
-
-    
-      <br />
-      <div>{{form.submit(class="btn btn-primary")}}
-      </div>
-      <br />
-    </form>
-   
-
     
     <!--ADD PHOTO-->
     
     <form
-    action="{{url_for('views.upload_img')}}"
+    action="{{url_for('views.createpost')}}"
     method="post"
     enctype="multipart/form-data"
   >
-    <input name="pic" class="upload" type="file" />
-    <label>caption..</label>
-    <textarea
-      name="caption"
-      id="caption"
-      cols="30"
-      rows="10"
-      class="form-control"
-      placeholder="write Caption.."
-    ></textarea>
-  
-    <div><button class="btn btn-primary">ADDPIC</button></div>
+  {{ form.csrf_token }}
+    
+    {{form.post.label}}
+    {{form.post( cols="30",
+    rows="10",
+    class="form-control")}}
+    
+  {{form.image.label}}
+  {{form.image}}
+    <div><button class="btn btn-primary">POST</button></div>
   </form>
     {% endblock %}
