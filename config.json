@@ -1,0 +1,8 @@
+{
+    "SECRET_KEY": "hjshjhdjah kjshkjdhjs",
+    "SQLALCHEMY_DATABASE_URI": "sqlite:///database.db",
+    "RECAPTCHA_PUBLIC_KEY":"6LfmgGghAAAAAJysT62qcRna1JhE9t2VBUqH6Tse",
+    "RECAPTCHA_PRIVATE_KEY":"6LfmgGghAAAAALXblkN7LJOqWvqzURb7kPgOcmW_",
+    "EMAIL":"Your Email",
+    "EMAIL_PASSWORD":"Your Email password"
+  }

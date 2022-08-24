@@ -7,19 +7,37 @@
     
 }
 
-#navbar{
-    font-family: 'Poppins', sans-serif !important;
-    background-color: black !important;
+.navbar{
+    /* font-family: 'Poppins', sans-serif !important; */
+   	background-color: #4474ee !important;
 }
 
-.row {
-	--bs-gutter-x: 1.5rem;
-	--bs-gutter-y: 0;
-	display: flex;
-	flex-wrap: wrap;
-	margin-top: calc(-1 * var(--bs-gutter-y));
-	margin-right: calc(-.5 * var(--bs-gutter-x));
-	margin-left: calc(-.5 * var(--bs-gutter-x));
-	border-bottom: 1px solid;
-	border-block-color: rgb(19, 14, 25);
+.nav-link {
+    display: block;
+    margin: 10px;
+    border: none;
+    border-radius: 4px;
+    padding: .5rem 1rem;
+    background-color: #1e356e;
+    color: #fff9f9 !important;
+    text-decoration: none;
+	text-align: center;
+	width: 100px !important;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out;
+}
+
+.profile-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 500px;
+	margin: 5px;
+  }
+
+.post-image {
+    width: 600px;
+    height: 600px;
+  }
+  
+.post-container{
+	background-color: #b5e40c;
 }

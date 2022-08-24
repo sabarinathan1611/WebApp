@@ -32,7 +32,7 @@ integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jI
 <body>
   {% block body %}
 
-  <body>
+ 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">Project Name</a>
@@ -46,6 +46,7 @@ integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jI
             {% if "user_id" in session %}
             <a class="nav-link active" aria-current="page" href="/">Home</a>
             <a class="nav-link" id="profile" href="{{url_for('views.my_post')}}">My posts</a>
+        
             <a class="nav-link" href="{{url_for('views.createpost')}}">Createpost</a>
             <a class="nav-link" href="{{url_for('views.profile')}}">Profile</a>
             
@@ -101,7 +102,8 @@ integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jI
 
 
 
-    <div>{% block content %}
+    <div class ="container_base"
+    >{% block content %}
 
       {% endblock %}</div>
 

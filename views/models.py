@@ -16,25 +16,30 @@ class User(db.Model, UserMixin):
     profile_pic = db.Column(db.String(100000), default='Default/Default.jpeg')
 
     date = db.Column(db.DateTime(timezone=True), default=func.now())
-    notes = db.relationship('Note', backref='poster')
-    images = db.relationship('Image', backref='img_poster')
+    posts = db.relationship('Post', backref='poster')
+   
     admin = db.Column(db.Boolean, default=False)
     comments = db.relationship('Comment', backref='user')
-    img_comments = db.relationship('ImageComment', backref='user')
+    
 
     
 
     def __repr__(self) :
         return '<Name %r>' %self.name
 
-class Note(db.Model):
+class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    post = db.Column(db.String(10000),nullable=False)
+    post = db.Column(db.String(10000),nullable=True)
     edited=db.Column(db.Boolean, default=False)
+    
     date = db.Column(db.DateTime(timezone=True), default=func.now())
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     likes= db.relationship('Post_like', backref='like')
     comments = db.relationship('Comment', backref='post')
+    
+    img_name = db.Column(db.String(100000), unique=True)
+    mimetype = db.Column(db.Text, nullable=True)
+    
 class Admin(db.Model):
     id = db.Column(db.Integer,primary_key = True)
     date = db.Column(db.DateTime(timezone=True), default=func.now())
@@ -44,43 +49,19 @@ class Admin(db.Model):
     password = db.Column(db.String(500),nullable=True)
     name = db.Column(db.String(150),nullable=True)
 
-
-class Image(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    caption = db.Column(db.Text, nullable=True)
-    date = db.Column(db.DateTime(timezone=True), default=func.now())
-    img_name = db.Column(db.String(100000), unique=True)
-    mimetype = db.Column(db.Text, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    likes= db.relationship('Image_like', backref='like')
-    comments = db.relationship('ImageComment', backref='post')
-    
-
 class Post_like(db.Model):
     id =db.Column(db.Integer,primary_key=True)
-    post_id =db.Column(db.Integer, db.ForeignKey('note.id'))
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    date = db.Column(db.DateTime(timezone=True), default=func.now()) 
-    
-class Image_like(db.Model):
-    id =db.Column(db.Integer,primary_key=True)
-    post_id =db.Column(db.Integer, db.ForeignKey('image.id'))
+    post_id =db.Column(db.Integer, db.ForeignKey('post.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     date = db.Column(db.DateTime(timezone=True), default=func.now()) 
     
 class Comment (db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    post_id = db.Column(db.Integer, db.ForeignKey('note.id'))
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
     text = db.Column(db.String(10000),nullable=False)
     edited=db.Column(db.Boolean, default=False)
     date = db.Column(db.DateTime(timezone=True), default=func.now())
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     
-class ImageComment (db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    post_id = db.Column(db.Integer, db.ForeignKey('image.id'))
-    text = db.Column(db.String(10000),nullable=False)
-    edited=db.Column(db.Boolean, default=False)
-    date = db.Column(db.DateTime(timezone=True), default=func.now())
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
     

@@ -1,29 +1,20 @@
-{% extends "base.html" %} {% block title %}Edit Post{% endblock %} {% block
-    content%} {% if "user_id" in session %}
-    <h1>Hello {{session["user_id"]}}</h1>
+{% extends "base.html" %} {% block title %}Edit Post{% endblock %} {% block content %}
+    {{post.id}}
+    <form action="{{url_for('views.update_note',id=post.id)}}" method="post"
+    action="{{url_for('views.createpost')}}">
     
-    
-    {% endif %} {% if "user_name" in session %}
-    <h1> {{session["user_name"]}}</h1>
-    
-    {% endif %}
-    {{note.id}}
-    
-    <form action="{{url_for('views.update_note',id=note.id)}}" method="post">
-      <textarea
-        name="note"
-        id="note"
-        cols="30"
-        rows="10"
-        class="form-control"
-        placeholder="Here you can  write your notes"
-        
-      >{{note.post}}</textarea>
+    {{ form.csrf_token }}
+    {{form.post.label}}
+    {{form.post(cols="30",rows="10",class="form-control",placeholder="Here you can  write your notes" )}}
+
     
       <br />
-      <div><button class="btn btn-primary">ADDNOTE</button></div>
+      <div>{{form.submit(class="btn btn-primary")}}
+      </div>
       <br />
     </form>
+   
+    
     
 
     

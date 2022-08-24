@@ -1,10 +1,10 @@
 
 
-function deleteNote(noteId) {
-    alert('Do you wante to delete this post');
+function deletePost(postId) {
+   
     fetch("/delete-note", {
       method: "POST",
-      body: JSON.stringify({ noteId: noteId }),
+      body: JSON.stringify({ postId: postId }),
     }).then((_res) => {
       window.location.href = "/";
       
@@ -13,16 +13,6 @@ function deleteNote(noteId) {
   
 
 
-  function deleteImg(imgId) {
-    console.log("heloo")
-    fetch("/delete-Img", {
-      method: "POST",
-      body: JSON.stringify({ imgId: imgId }),
-    }).then((_res) => {
-      window.location.href = "/";
-      
-    });
-  }
 
 
   

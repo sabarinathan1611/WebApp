@@ -1,21 +1,14 @@
 {% extends "base.html" %} {% block title %}SignUp {% endblock %} {% block
     content%}
     
-    <form  method="post">
+    <form  method="POST">
+      {{form.hidden_tag()}}
       
-      <div class="form-group">
-        <label for="email">Email Address</label>
-        <input
-          type="email"
-          class="form-control"
-          id="email"
-          name="email"
-          placeholder="Enter the email address"
-        />
-      </div>
-    
+      {{form.email.label}}
+      {{form.email(class="form-control",placeholder="Enter the email address")}}
       <br />
-      <button type="submit" class="btn btn-primary">submit</button>
+
+  {{form.submit(class="btn btn-primary")}}
     </form>
     {% endblock %}
     

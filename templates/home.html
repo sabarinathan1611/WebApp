@@ -4,68 +4,63 @@
 
 
 <style>
-  .profile_img {
-    width: 50px;
-    height: 50px;
-    border-radius: 500px;
-  }
 
-  .post_image {
-    width: 500px;
-    height: 500px;
-  }
 </style>
 
-<div class="shadow-lg p-3 mb-5 bg-body rounded">
-  {{current_user.id}}
-  <ul class="list-group list-group-flush" id="notes">
-    {% for note in notes %}
-    <li class="list-group-item">
 
-      <div class="username" style="    font-family: 'Trispace', sans-serif;"> <img
-          src="{{url_for('static', filename='images/'+note.poster.profile_pic)}}" class="profile_img"
-          alt="img error">{{note.poster.user_name}}
-      </div>
+<div class="post-container">
+  <div class="text-post">
+    <div class="post">
+      <ul class="list-group list-group-flush" id="notes">
+        {% for post in posts %}
+        <li class="list-group-item">
 
-      <div> <b>Post:</b>
-        {%if note.edited == True %}
-        <div class="edited" style="font-family: 'Poppins', sans-serif;"><small>(edited)</small>
+          <div class="username" style="    font-family: 'Trispace', sans-serif;"> <img
+              src="{{url_for('static', filename='images/'+post.poster.profile_pic)}}" class="profile-img"
+              alt="img error">{{post.poster.user_name}}
+          </div>
 
-        </div>
+          <div class="post-content">
 
-        {%endif%}
-        <p class="post" style="font-family: 'Gantari', sans-serif;">{{ note.post }}
-        <p>
+            {%if post.edited == True %}
+            <div class="edited" style="font-family: 'Poppins', sans-serif;"><small>(edited)</small></div>
 
-      </div>
+            {%endif%}
+            <p class="post" style="font-family: 'Gantari', sans-serif;"><div class="text-post">{{ post.post }}</div>
+              {%if post.img_name != None%}
+              <img src="{{url_for('static', filename='images/post/'+post.img_name)}}" class="post-image" alt="img error">
+              {%endif%}
+            <p>
 
-      {{note.likes |length}}
+          </div>
 
-
-
-      {%if current_user.id in note.likes|map(attribute="user_id")|list%}
-      <a href="/posts" onClick="like ( {{ note.id }} )" role="button" data-bs-toggle="button"><i
-          class="fa-solid fa-thumbs-up"></i></a>
-      {%else%}
-      <a href="/posts" onClick="like ( {{ note.id }} )" role="button" data-bs-toggle="button"><i
-          class="fa-regular fa-thumbs-up"></i></a>
-
-      {%endif%}
-
-      <form class="input-group mb-3" method="POST" action="/comment/{{note.id}}">
-        <input type="text" id="text" name="text" class="form-control" placeholder="Comment something!" />
-        <button type="submit" class="btn btn-primary">Comment</button>
-      </form>
-      <div class="row row-cols-2">
-
-        
-          <div class="commentt">
-           
-            {% for comment in note.comments %}
           
+            
+          
+          <div class="likes">
+            <span id="likes-count-{{post.id}}">
+              {{ post.likes|length }}
+            </span>
+            {%if current_user.id in post.likes|map(attribute="user_id")|list%}
+
+            <i class="fas fa-thumbs-up" id="like-button-{{post.id}}" onclick="like({{post.id}})"></i>
+            {%else%}
+            <i class="far fa-thumbs-up" id="like-button-{{post.id}}" onclick="like({{post.id}})"></i>
+
+            {%endif%}
+          </div>
+
+          <div class="comment">
+
+            {% for comment in post.comments %}
+
             <div class="col">
-              <div class="font-family: 'Trispace', sans-serif;">{{comment.user.user_name}} </div>
-             
+
+              <div class="font-family: 'Trispace', sans-serif;"><img
+                src="{{url_for('static', filename='images/'+comment.user.profile_pic)}}" class="profile-img"
+                alt="img error">
+                {{comment.user.user_name}} </div>
+
 
 
               <div class="font-family: 'Assistant', sans-serif;">
@@ -74,105 +69,35 @@
 
               <br>
             </div>
-            
-            
             {%endfor%}
             
           </div>
-        
-        
-      </div>
-      <br>
+          <br>
+          <div class="comment-form">
 
-      {% if note.poster.id == session["user_id"] or current_user.admin == True%}
-      <button type="button" class="btn btn-danger" onClick="deleteNote ( {{ note.id }} )">Remove Post
+            <form class="input-group mb-3" method="POST" action="/comment/{{post.id}}">
+              <input type="text" id="text" name="text" class="form-control" placeholder="Comment something!" />
+              <button type="submit" class="btn btn-primary">Comment</button>
+            </form>
+          </div>
+          <br>
+          <div class="time">{{post.date.date()}}</div>
+          <div class="btns">
 
-      </button>
-      <a class="btn btn-primary" href="{{url_for('views.edit_note',id=note.id)}}">Edit</a>
+            {% if post.poster.id == session["user_id"] or current_user.admin == True%}
+            <button type="button" class="btn btn-danger" onClick=" deletePost ( {{ post.id }} )">Remove Post
 
-      {% endif %}
-    </li>
-    {% endfor %}
-  </ul>
-</div>
-
-
-
-<div class="shadow p-3 mb-5 bg-body rounded">
-
-  <ul class="list-group list-group-flush" id="notes">
-    {% for image in images %}
-    <li class="list-group-item">
-      <div class="img">
-        <img src="{{url_for('static', filename='images/'+image.img_poster.profile_pic)}}" class="profile_img"
-          alt="img error"> {{image.img_poster.user_name}}
-
-      </div>
-      <p class="caption" style="font-family: 'Trispace', sans-serif;"> Post: </p>
-     
-
-        <img src="{{url_for('static', filename='images/post/'+image.img_name)}}" class="post_image" alt="img error">
-        <div>
-          <h4 class="caption" style="font-family: 'Trispace', sans-serif;">Caption:</h4>
-          <p class="caption" style="font-family: 'Trispace', sans-serif;">{{image.caption}}</p>
-        </div>
-
-
-        <div class="Like">
-          {{image.likes |length}}
-
-
-
-          {%if current_user.id in image.likes|map(attribute="user_id")|list%}
-          <a href="#" onClick=" img_like ( {{ image.id }} )" role="button" data-bs-toggle="button"><i
-              class="fa-solid fa-thumbs-up"></i></a {%else%} <a href="#" onClick=" img_like ( {{ image.id }} )"
-            role="button" data-bs-toggle="button"><i class="fa-regular fa-thumbs-up"></i></a {%endif%} </div>
-
-
-          {% if image.img_poster.id == session["user_id"] or current_user.admin == True%}
-          <button type="button" class="btn btn-danger" onClick="deleteImg ( {{ image.id }} )">Remove image
-
-          </button>
-
-          {% endif %}       
-        </div>
-        <form class="input-group mb-3" method="POST" action="/imgcomment/{{image.id}}">
-          <input type="text" id="text" name="text" class="form-control" placeholder="Comment something!" />
-          <button type="submit" class="btn btn-primary">Comment</button>
-        </form>
-
-        
-         
-      
-    </li>
-    <div class="commentt">
-           
-      {% for comment in image.img_comments %}
-    
-      <div class="col">
-        <div class="font-family: 'Trispace', sans-serif;">{{comment.user.user_name}} </div>
-       
-
-
-        <div class="font-family: 'Assistant', sans-serif;">
-          {{comment.text}}
-        </div>
-
-        <br>
-      </div>
-      
-      
-      {%endfor%}
-      
+            </button>
+            <a class="btn btn-primary" href="{{url_for('views.edit_note',id=post.id)}}">Edit</a>
+          </div>
+          {% endif %}
+        </li>
+        {% endfor %}
     </div>
-  
-    {% endfor %}
-  </ul>
-</div>
-<link
-  rel="stylesheet"
-  href="{{ url_for('static', filename='css/home.css') }}"
-/>
+    </ul>
+  </div>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}" />
 
 
 

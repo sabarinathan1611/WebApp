@@ -1,6 +1,6 @@
 function deleteUser(userId) {
   console.log("heloo admin")
-  fetch("/delete_user", {
+  fetch("/delete-user", {
     method: "POST",
     body: JSON.stringify({ userId: userId }),
   }).then((_res) => {
@@ -16,7 +16,7 @@ function deleteUser(userId) {
 
 function add_Admin(userId) {
     console.log("heloo admin")
-    fetch("/add_admin", {
+    fetch("/add-admin", {
       method: "POST",
       body: JSON.stringify({ userId: userId }),
     }).then((_res) => {
@@ -28,7 +28,7 @@ function add_Admin(userId) {
 
   function removeAdmin(userId) {
     console.log("heloo admin")
-    fetch("/remove_admin", {
+    fetch("/remove-admin", {
       method: "POST",
       body: JSON.stringify({ userId: userId }),
     }).then((_res) => {
