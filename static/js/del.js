@@ -17,7 +17,7 @@ function deletePost(postId) {
 
   
 function Remove_Profile(){
-  window.location.href = "/remove_Profile_photo";
+  window.location.href = "/remove-Profile-photo";
 
 }
 

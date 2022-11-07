@@ -4,40 +4,117 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    text-decoration: none;
     
 }
-
-.navbar{
-    /* font-family: 'Poppins', sans-serif !important; */
-   	background-color: #4474ee !important;
+.navbar:: before{
+	position: fixed;
+}
+body{
+	background-color: #a7adac47;
+	width: 100%;
 }
 
-.nav-link {
-    display: block;
-    margin: 10px;
-    border: none;
-    border-radius: 4px;
-    padding: .5rem 1rem;
-    background-color: #1e356e;
-    color: #fff9f9 !important;
-    text-decoration: none;
-	text-align: center;
-	width: 100px !important;
-    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out;
+/* Post Title */
+.post-title {
+    display: flex;
+    justify-content: flex-end;
+    padding: 5px;
+    margin: 0px;
+    flex-direction: row-reverse;
+    /* flex-flow: wrap row-reverse; */
 }
-
 .profile-img {
-    width: 50px;
-    height: 50px;
-    border-radius: 500px;
-	margin: 5px;
+    height: 45px;
+    border-radius: 480px;
+    /* margin: 5px; */
+}
+.username {
+    font-family: 'Trispace', sans-serif;
+    /* background-color: black; */
+    color: black;
+    padding: 5px;
+    font-size: 15px;
+}
+
+/* Post */
+.post-container {
+    display: flex;
+    width: 100%;
+    /* padding: 10px; */
+    /* position: relative; */
+    justify-content: center;
+}
+
+
+.text-post {
+    /* background-color: #a46060; */
+    width: 100%;
+    padding: 7px;
+    height: 28px;
+}
+.post {
+    background-color: #fff;
+    /* flex-direction: column; */
+    width: 53%;
+    box-shadow: 0 8px 32px 0 #0c1540ad;
+}
+.list-group{
+    width: 100%;
+    display: flex;
+    padding: 5px;
+    justify-content: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+.post-image {
+    width: 100%;
+    height: auto;
+  }
+.post-content {
+    width: 100%;
+}
+/* Post Fooder */
+
+.likes{
+
+}
+
+.comment{
+
+}
+
+.comment-form{
+
+}
+
+.comment-form > form{
+
+}
+
+.comment-form > input{
+
+}
+
+.comment-form >button {
+
+}
+
+
+
+
+  /*Mobile */
+@media (max-width: 767px){
+.post-container{
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: column;
+	align-content: center;
+}
+.post-image {
+    width: 320px;
+    height: auto;
   }
 
-.post-image {
-    width: 600px;
-    height: 600px;
-  }
-  
-.post-container{
-	background-color: #b5e40c;
+
 }

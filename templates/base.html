@@ -20,7 +20,7 @@ integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jI
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anek+Malayalam:wdth,wght@120.8,100&display=swap" rel="stylesheet"> 
-
+<link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}" />
 
 
 
@@ -33,44 +33,47 @@ integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jI
   {% block body %}
 
  
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#">Project Name</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
-          aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-
-          <div class="navbar-nav">
-            {% if "user_id" in session %}
-            <a class="nav-link active" aria-current="page" href="/">Home</a>
-            <a class="nav-link" id="profile" href="{{url_for('views.my_post')}}">My posts</a>
+    <nav class="navbar">
         
-            <a class="nav-link" href="{{url_for('views.createpost')}}">Createpost</a>
-            <a class="nav-link" href="{{url_for('views.profile')}}">Profile</a>
-            
-            <a class=" nav-link" id="logout" href="{{url_for('auth.logout')}}">Logout</a>
+       
 
-
-           
-            {%if current_user.admin  == True or current_user.id == 1   %}
-                <a class="nav-link" id="profile" href="{{url_for('views.admin')}}">Admin</a>
-             
-              {% endif %}
-              {%if current_user.admin == True  or current_user.id==1%}
-              <a class="nav-link" id="profile" href="{{url_for('views.admin_login')}}">Admin_login</a>
           
-            {% endif %}
-            
+            <ul class="list">
+                
+        <span class="project-name">Project Name</span>
+                  
+                  {% if "user_id" in session %}
+                  <li><a class="nav-link " aria-current="page" href="/">Home</a></li>
+                 <li> <a class="nav-link" id="profile" href="{{url_for('views.my_post')}}">My posts</a></li>
+              
+                 <li> <a class="nav-link" href="{{url_for('views.createpost')}}">Createpost</a></li>
+                  <li><a class="nav-link" href="{{url_for('views.profile')}}">Profile</a></li>
+                  
+                  <li><a class=" nav-link" id="logout" href="{{url_for('auth.logout')}}">Logout</a></li>
 
-            {% else %}
-            <a class="nav-link" id="login" href="{{url_for('auth.login')}}">Login</a>
-            <a class="nav-link" id="signUp" href="{{url_for('auth.sing_up')}}">Sign Up</a>
-            {% endif %}
+
+                 
+                  {%if current_user.admin  == True or current_user.id == 1   %}
+                      <li><a class="nav-link" id="profile" href="{{url_for('views.admin')}}">Admin</a></li>
+                   
+                    {% endif %}
+                    {%if current_user.admin == True  or current_user.id==1%}
+                    <li><a class="nav-link" id="profile" href="{{url_for('views.admin_login')}}">Admin Login</a></li>
+                
+                  {% endif %}
+                  
+
+                  {% else %}
+                  <li><a class="nav-link" id="login" href="{{url_for('auth.login')}}">Login</a></li>
+                  <li><a class="nav-link" id="signUp" href="{{url_for('auth.sing_up')}}">Sign Up</a></li>
+                  {% endif %}
+             </ul>
+              <div id="hamburger" class="hamburger">
+                <span class="line"></span><span class="line"></span><span class="line"></span>
+              </div>
           </div>
-        </div>
-      </div>
+         
+      
     </nav>
    
 
@@ -124,6 +127,15 @@ integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jI
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     
+    <script>
+    // $(function () {
+    //     $('navbar li a').filter(function () {
+    //         console.log("Work")
+    //         return this.href === location.href;
+    //     }).addClass('active');
+    // });
+
+</script>
 
   </body>
 
