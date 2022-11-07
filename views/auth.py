@@ -55,7 +55,7 @@ def send_mail(email,subject,body):
                 subject = subject
                 body = body
                 message = f'Subject:{subject}\n\n{body}'
-                server = smtplib.SMTP("smtp.gmail.com", 587)
+                server = smtplib.SMTP("smtp.gmail.com",587)
                 server.starttls()
                 server.login("config.get()", "config.get()")
                 server.sendmail("your Email", email,message)
