@@ -58,8 +58,7 @@ def send_mail(email,subject,body):
                 server = smtplib.SMTP("smtp.gmail.com", 587)
                 server.starttls()
                 server.login("config.get()", "config.get()")
-                server.sendmail("your Email", email,
-                                message)
+                server.sendmail("your Email", email,message)
             except smtplib.SMTPException as error:
                 flash(f"{error}",
                       category='error')  
