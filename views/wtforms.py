@@ -76,6 +76,6 @@ class SearchForm(FlaskForm):
     search    = StringField("Serach",validators=[InputRequired()])
     submit    = SubmitField("Search")
     
-#class PostForm(FlaskForm):
+
     
     

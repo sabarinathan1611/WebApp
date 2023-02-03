@@ -329,7 +329,7 @@ def profile():
 
 
 #Remove Profile
-@views.route('/remove-Profile_photo', methods=['POST', 'GET'])
+@views.route('/remove-Profile-photo', methods=['POST', 'GET'])
 @login_required
 def remove_Profile_photo ():
     if current_user.profile_pic == 'Default/Default.jpeg':

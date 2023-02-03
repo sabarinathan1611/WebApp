@@ -9,16 +9,20 @@
 
 
 <div class="post-container">
-  <div class="text-post">
+  <!-- <div class="text-post"> -->
     <div class="post">
       <ul class="list-group list-group-flush" id="notes">
         {% for post in posts %}
         <li class="list-group-item">
 
-          <div class="username" style="    font-family: 'Trispace', sans-serif;"> <img
+
+          <div class="post-title">
+           <h6 class="username">{{post.poster.user_name}}</h6> 
+              <img
               src="{{url_for('static', filename='images/'+post.poster.profile_pic)}}" class="profile-img"
-              alt="img error">{{post.poster.user_name}}
+              alt="img error">
           </div>
+
 
           <div class="post-content">
 
@@ -26,9 +30,13 @@
             <div class="edited" style="font-family: 'Poppins', sans-serif;"><small>(edited)</small></div>
 
             {%endif%}
-            <p class="post" style="font-family: 'Gantari', sans-serif;"><div class="text-post">{{ post.post }}</div>
+            <p class="post">
+              <div class="text-post">{{ post.post }}</div>
               {%if post.img_name != None%}
-              <img src="{{url_for('static', filename='images/post/'+post.img_name)}}" class="post-image" alt="img error">
+              <div class="post-image">
+                <img src="{{url_for('static', filename='images/post/'+post.img_name)}}"  alt="img error">
+              </div>
+              
               {%endif%}
             <p>
 
@@ -54,21 +62,25 @@
 
             {% for comment in post.comments %}
 
-            <div class="col">
+            
 
               <div class="font-family: 'Trispace', sans-serif;"><img
                 src="{{url_for('static', filename='images/'+comment.user.profile_pic)}}" class="profile-img"
                 alt="img error">
-                {{comment.user.user_name}} </div>
+                {{comment.user.user_name}}
+                 </div>
 
 
 
               <div class="font-family: 'Assistant', sans-serif;">
-                {{comment.text}}
+                <ul>
+                  <li> {{comment.text}}</li></ul>
+
+               
               </div>
 
               <br>
-            </div>
+            
             {%endfor%}
             
           </div>
@@ -95,7 +107,7 @@
         {% endfor %}
     </div>
     </ul>
-  </div>
+  <!-- </div> -->
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}" />
 

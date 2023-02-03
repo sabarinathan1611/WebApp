@@ -1,0 +1,84 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,300&display=swap'); 
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    list-style: none;
+    
+}
+
+
+.navbar {
+    
+    font-family: 'Kanit', sans-serif;
+    background-color: #4474ee !important;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 15px;
+    align-items: center;
+    
+}
+
+.nav-link {
+	text-decoration: none;
+	color: #fff9f9;
+	
+	/*background-color: #1f3866;*/
+	/*border-radius: 4px;*/
+	/*padding: 10px;*/	
+	
+}
+.nav-link:hover {
+    color: #000000;
+   
+    border-bottom: 2px solid;
+}
+.active{
+    background-color: green;
+}
+
+.logo{
+	margin-right: 50px;
+}
+
+.list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    align-items: center;
+}
+
+.project-name {
+    padding: 13px;
+    background-color: #000;
+    margin: 0px;
+    border-radius: 4px;
+    text-decoration: none;
+    align-content: center;
+    color: #fff;
+    font-family: system-ui;
+}
+
+
+
+  /*Mobile */
+@media (max-width: 767px){
+     .hamburger{
+        float: right;
+        padding-right:20px ;
+        padding-top: 12px;
+    }
+    .hamburger .line{
+        display: block;
+       width: 15px;
+       height: 5px;
+       background-color: rgb(246, 246, 246);
+       margin-bottom: 5px;
+        
+    }
+}
