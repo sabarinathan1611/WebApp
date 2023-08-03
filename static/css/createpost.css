@@ -1,0 +1,71 @@
+*{
+    margin: 0;
+    padding:0;
+    box-sizing:border-box;
+
+}
+
+.wrapper {
+    display: none;
+	width: 470px;
+	background: #53945e;
+	border-radius: 5px;
+	padding: 25px 25px 30px;
+	position: absolute;
+	top: 100%;
+	left: 40%;
+    
+}
+.wrapper textarea{
+    width: 100%;
+    height: 59px;
+    padding: 15px;
+    outline: none;
+    resize: none;
+    font-size: 16px;
+    margin-top: 20px;
+    border-radius: 5px;
+    border-color: #bfbfbf;
+    max-height: 300px;
+}
+textarea:is(:focus,:valid){
+    border-color: #4671EA;
+}
+textarea::-webkit-scrollbar{
+    width: 0px;
+}
+*,
+*:before,
+*:after {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+@media (max-width:768px){
+.wrapper {
+    display: none;
+    width: 50%;
+    background: #53945e;
+    border-radius: 5px;
+    padding: 25px 25px 30px;
+    position: absolute;
+    top: 100%;
+    left: 25%;
+}}
+
+@media(max-width:375px){
+    .wrapper {
+        display: none;
+        width: 70%;
+        background: #53945e;
+        border-radius: 5px;
+        padding: 25px 25px 30px;
+        position: absolute;
+        top: 100%;
+        left: 15%;
+    }
+    input[type="file"] {
+        width: 200px;
+    }
+}

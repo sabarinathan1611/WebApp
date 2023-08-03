@@ -1,116 +1,218 @@
-{% extends "base.html" %} {% block title %} HOME {% endblock %} {% block content%}
-<link href="https://cdn.jsdelivr.net/npm/froala-editor@3.1.0/css/froala_editor.pkgd.min.css" rel="stylesheet"
-  type="text/css" />
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="image/x-icon" href="static/images/logo/Logo.png">
+  <!-- <link rel="stylesheet" href="static/CSS/newhome.css">
+  <link rel="stylesheet" href="static/CSS/createpost.css"> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
+    integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.min.js" integrity="sha512-BI5pLPJGdth/OsPIfy68sSQ2q7L03sJ3O4fC0HKaPLXrDjQkIb8Sc3hYPMWUQwHQNOk82iAONeL2Q0NZH1Q3ew==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/newhome.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/createpost.css') }}" />
+  <title>Project</title>
+</head>
 
-<style>
+<body>
+  <div class="navbar">
 
-</style>
+    <header>
 
+      <div class="logo">
+        <img src="static/images/logo/D_LOGO.png" alt="LOGO">
+      </div>
 
-<div class="post-container">
-  <!-- <div class="text-post"> -->
-    <div class="post">
-      <ul class="list-group list-group-flush" id="notes">
+      <!-- <div class="search-box">
+        <i class="fas fa-search"></i>
+        <form action="#"><input type="text" placeholder="Search"></form>
+
+      </div> -->
+      <nav>
+        <ul>
+          <li><a href="{{url_for('views.home')}}"><img class="icons" src="static/images/logo/house-solid.svg" alt="Home"></a>
+          </li>
+          <li><a href="{{url_for('views.my_post')}}"><img class="icons" src="static/images/logo/page-removebg-preview.png"
+                alt="My post"></a>
+          </li>
+          <li><a href="#"><img onclick="creatPostu()" id="newPost" class="icons" src="static/images/logo/create.svg"
+                alt="create post">
+              <div class="forcrtpost">
+                <div id="creatpost" class="wrapper">
+                  <form action="{{url_for('views.createpost')}}" class="form" method="post"
+                    enctype="multipart/form-data">
+                    {{ form.csrf_token }}
+                    {{form.post(placeholder="Type something..." ,id="text", cols="30" ,rows="10"
+                    )}}
+                    
+                    {{form.image(class="fileinput" ,type="file" )}}
+                    
+                    <button type="submit">send</button>
+
+                  </form>
+                </div>
+              </div>
+            </a></li>
+          <li><a href="{{url_for('views.profile')}}"><img class="profile"
+                src="{{url_for('static', filename='images/'+current_user.profile_pic)}}" alt="Profile">
+              <div class="data">
+
+              </div>
+            </a></li>
+          <li><i href=""><img class="icons" onclick="ro()" id="setting" src="static/images/logo/gear-solid.svg" alt="setting">
+
+              <div id="set" class="setbox">
+                {%if current_user.admin  == True or current_user.id == 1   %}
+                <div class="foradmin">
+
+                  <i><a href="{{url_for('views.admin')}}"><img src="static/images/logo/admin.svg" alt="Admin">
+                      <legend>Admin</legend>
+                    </a>
+                  </i>
+
+                </div>
+                {% endif %}
+                <div class="forlogout">
+                  <i><a href="{{url_for('auth.logout')}}"><img src="static/images/logo/logout-svgrepo-com.svg" alt="Logout">
+                      <legend>Logout</legend>
+                    </a>
+                  </i>
+
+                </div>
+
+              </div>
+          </li>
+
+        </ul>
+
+      </nav>
+    </header>
+
+  </div>
+  <section>
+    <div class="left-side">
+      <ul>
         {% for post in posts %}
-        <li class="list-group-item">
+        <li>
+          <div class="posts">
 
 
-          <div class="post-title">
-           <h6 class="username">{{post.poster.user_name}}</h6> 
-              <img
-              src="{{url_for('static', filename='images/'+post.poster.profile_pic)}}" class="profile-img"
-              alt="img error">
-          </div>
+            <div class="post-title">
 
+              <div class="profile">
 
-          <div class="post-content">
+                <img class="image" src="{{url_for('static', filename='images/'+post.poster.profile_pic)}}" width="32"
+                  height="32" alt="Profile">
 
-            {%if post.edited == True %}
-            <div class="edited" style="font-family: 'Poppins', sans-serif;"><small>(edited)</small></div>
+              </div>
 
-            {%endif%}
-            <p class="post">
-              <div class="text-post">{{ post.post }}</div>
+              <div class="username">
+
+                <p class="name"> {{post.poster.user_name}}</p>
+
+              </div>
+
+            </div>
+
+            <div class="post-content">
+              <div class="text-post">
+                {%if post.edited == True %}
+                <small>(edited)</small>
+                {%endif%}
+                <p> {{ post.post }}
+                </p>
+              </div>
+
               {%if post.img_name != None%}
-              <div class="post-image">
-                <img src="{{url_for('static', filename='images/post/'+post.img_name)}}"  alt="img error">
-              </div>
-              
+              <img src="{{url_for('static', filename='images/post/'+post.img_name)}}" height="400" width="600"
+                alt="post">
               {%endif%}
-            <p>
+            </div>
 
-          </div>
-
-          
-            
-          
-          <div class="likes">
-            <span id="likes-count-{{post.id}}">
-              {{ post.likes|length }}
-            </span>
-            {%if current_user.id in post.likes|map(attribute="user_id")|list%}
-
-            <i class="fas fa-thumbs-up" id="like-button-{{post.id}}" onclick="like({{post.id}})"></i>
-            {%else%}
-            <i class="far fa-thumbs-up" id="like-button-{{post.id}}" onclick="like({{post.id}})"></i>
-
-            {%endif%}
-          </div>
-
-          <div class="comment">
-
-            {% for comment in post.comments %}
-
-            
-
-              <div class="font-family: 'Trispace', sans-serif;"><img
-                src="{{url_for('static', filename='images/'+comment.user.profile_pic)}}" class="profile-img"
-                alt="img error">
-                {{comment.user.user_name}}
-                 </div>
-
-
-
-              <div class="font-family: 'Assistant', sans-serif;">
-                <ul>
-                  <li> {{comment.text}}</li></ul>
-
-               
+            <div class="post-footer">
+              <div class="like-comment">
+                {%if current_user.id in post.likes|map(attribute="user_id")|list%}
+                <i><img class="icons" src="static/images/logo/like.svg"id="like-button-{{post.id}}" onclick="like({{post.id}})" alt="like"></i>
+                {%else%}
+                <i><img class="icons" src="static/images/logo/unlike.svg" id="like-button-{{post.id}}" onclick="like({{post.id}})" alt="unlike"></i>
+                {%endif%}
+                <i><img onclick="comments({{post.id}})" class="icons" src="static/images/logo/comment.png" alt="unlike"></i>
               </div>
+              <div class="edit">
+                {% if post.poster.id == current_user.id or current_user.admin == True%}
+                <i><img class="icons" onClick=" deletePost( {{ post.id }} )" src="static/images/logo/trash.png" alt=""></i>
+                <i><a href="{{url_for('views.edit_note',id=post.id)}}"><img class="icons"
+                      src="static/images/logo/pen-to-square-solid.svg" alt="create post"></a></i>
+                {% endif %}
+              </div>
+            </div>
 
-              <br>
-            
-            {%endfor%}
-            
+            <div class="post-footer-content">
+              <span id="likes-count-{{post.id}}">
+                <p class="likes">{{ post.likes|length }}</p>
+              </span>
+
+
+
+
+              <p class="comments">546</p>
+              <P class="time">{{post.date.date()}}</P>
+
+            </div>
+
+            <div class="add-comment">
+
+              <form id="#comment-form" method="POST" action="/comment/{{post.id}}">
+                <div class="comment-left-side">
+                  <input id="comment-input" type="text" name="text" placeholder="Add comment">
+                </div>
+                <div class="comment-right-side">
+                  <button  type="submit">Comment</button>
+                </div>
+
+              </form>
+
+            </div>
+            <div class="" id="comment-{{post.id}}">
+              {% for comment in post.comments %}
+              <div id="" class="comment">
+                <div class="cmt-profile">
+                  <img class="image" src="{{url_for('static', filename='images/'+comment.user.profile_pic)}}" width="32" height="32" alt="Profile">
+                  <div class="cmt-username">
+
+                    <legend class="name">{{comment.user.user_name}}</legend>
+
+                  </div>
+                </div>
+
+                <div class="comment-content">
+                  <div class="comment-container" id="comment-container"> <p>
+                    <!-- {{comment.text}} -->
+                   </p></div>
+                 
+                </div>
+
+
+              </div>
+              {%endfor%}
+            </div>
+
           </div>
-          <br>
-          <div class="comment-form">
-
-            <form class="input-group mb-3" method="POST" action="/comment/{{post.id}}">
-              <input type="text" id="text" name="text" class="form-control" placeholder="Comment something!" />
-              <button type="submit" class="btn btn-primary">Comment</button>
-            </form>
-          </div>
-          <br>
-          <div class="time">{{post.date.date()}}</div>
-          <div class="btns">
-
-            {% if post.poster.id == session["user_id"] or current_user.admin == True%}
-            <button type="button" class="btn btn-danger" onClick=" deletePost ( {{ post.id }} )">Remove Post
-
-            </button>
-            <a class="btn btn-primary" href="{{url_for('views.edit_note',id=post.id)}}">Edit</a>
-          </div>
-          {% endif %}
         </li>
-        {% endfor %}
+        {%endfor%}
+      </ul>
+
+     
     </div>
-    </ul>
-  <!-- </div> -->
+  </section>
+  <script src="static/js/home.js"></script>
+  <script src="static/js/createpost.js"></script>
+  <script src="static/js/like.js"></script>
+  
+  <script src="static/js/del.js"></script>
+</body>
 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}" />
-
-
-
-{% endblock %}
+</html>

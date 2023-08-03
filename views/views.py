@@ -8,10 +8,11 @@ from flask_login import login_required, current_user
 from flask import session
 from .models import  Post, User, Admin,Comment,Post_like
 from . import db
-from . import create_app
+from . import create_app 
 from werkzeug.utils import secure_filename  #for secure file
+from flask_socketio import emit
 
-from.wtforms import *
+from .wtforms import *
 from werkzeug.security import generate_password_hash,check_password_hash
 views = Blueprint('views',
                   __name__,
@@ -22,10 +23,10 @@ app = create_app()
 
 # runs before FIRST request (only once)
 
-@app.before_first_request  
-def make_session_permanent():
-    session.permanent = True
-    app.permanent_session_lifetime = timedelta(hours=3)
+# @app.before_first_request  
+# def make_session_permanent():
+#     session.permanent = True
+#     app.permanent_session_lifetime = timedelta(minutes=60)
     
 
 
@@ -48,6 +49,7 @@ def home():
             user = current_user
             session["user_name"] = user.user_name
             posts = Post.query.order_by(Post.date)
+            form= Createpost()
             
         else:
             return redirect(url_for('auth.singup'))
@@ -57,7 +59,7 @@ def home():
     else:
         return redirect(url_for('auth.login'))
 
-    return render_template('home.html',posts=posts)
+    return render_template('home.html',posts=posts,form=form)
 
 
 #My post
@@ -348,19 +350,16 @@ def remove_Profile_photo ():
 @views.route('/admin-login', methods=['POST', 'GET'])
 @login_required
 def admin_login():   
-    form = LoginForm()
-    
-    
-
-    
+    form = LoginForm()    
     if current_user.admin == True:
         admin = Admin.query.filter_by(user_id=current_user.id).first()
         if request.method == "POST":
             email = request.form.get('email')
             password=request.form.get('password')
             admin_data = Admin.query.filter_by(email=email).first()  #check email from db
-            print(email)
+            print("Email:",admin_data)
             if admin_data:
+                print("Work broooo",check_password_hash(admin_data.password,password))
                 if check_password_hash(admin_data.password,password):  #check the password from db
                     if admin_data.user_id == current_user.id:
                         session.permanent = True
@@ -372,6 +371,11 @@ def admin_login():
                     else:
                         flash('you cannot use other admin ID ', category='success')
                         return redirect(url_for('views.admin'))
+                else:
+                    flash('Password Error',category='error')
+            else:
+                    flash("Email does not exits")
+                        
         return render_template('login.html',admin=admin,form=form)
     else:
         flash("User muste be a admin for access this page")
@@ -439,7 +443,7 @@ def add_admin():
         db.session.commit()
         print(user.admin)
 
-        return redirect('/admin')
+        return redirect(url_for('views.admin'))
     
     
     
@@ -696,3 +700,21 @@ def createuser():
                     return redirect(url_for('views.admin'))
     return redirect(url_for('views.admin'))
 
+# @socketio.on('comment')
+# def handle_comment(data):
+#     comment = data['comment']
+#     user_id = session['user_id']  # Get the ID of the current user
+#     username = session['username']  # Get the username of the current user
+#     message_id = data['message_id']  # Get the ID of the associated message
+
+#     conn = sqlite3.connect('database.db')
+#     c = conn.cursor()
+
+#     # Insert the comment into the database with the associated message ID and username
+#     c.execute("INSERT INTO comments (user_id, message_id, comment, username) VALUES (?, ?, ?, ?)", (user_id, message_id, comment, username))
+
+#     conn.commit()
+#     conn.close()
+
+#     # Broadcast the comment and associated message ID to all connected clients
+#     emit('comment', {'comment': comment, 'message_id': message_id, 'username': username}, namespace='/')

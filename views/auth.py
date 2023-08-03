@@ -11,6 +11,9 @@ from random import randint
 from flask_login import login_required, login_user, logout_user, current_user
 from flask import session
 
+#import a form class
+from .wtforms import *
+
 
 
 
@@ -55,10 +58,12 @@ def send_mail(email,subject,body):
                 subject = subject
                 body = body
                 message = f'Subject:{subject}\n\n{body}'
-                server = smtplib.SMTP("smtp.gmail.com",587)
+                server = smtplib.SMTP("smtp.gmail.com",
+                                      587)
                 server.starttls()
                 server.login("config.get()", "config.get()")
                 server.sendmail("your Email", email,message)
+                
             except smtplib.SMTPException as error:
                 flash(f"{error}",
                       category='error')  
@@ -69,8 +74,7 @@ auth = Blueprint('auth',
                  static_folder='../static')
 
 
-#creat a form class
-from .wtforms import *
+
 
 
 #Loing page

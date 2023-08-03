@@ -1,0 +1,116 @@
+{% extends "base.html" %} {% block title %} HOME {% endblock %} {% block content%}
+<link href="https://cdn.jsdelivr.net/npm/froala-editor@3.1.0/css/froala_editor.pkgd.min.css" rel="stylesheet"
+  type="text/css" />
+
+
+<style>
+
+</style>
+
+
+<div class="post-container">
+  <!-- <div class="text-post"> -->
+    <div class="post">
+      <ul class="list-group list-group-flush" id="notes">
+        {% for post in posts %}
+        <li class="list-group-item">
+
+
+          <div class="post-title">
+           <h6 class="username">{{post.poster.user_name}}</h6> 
+              <img
+              src="{{url_for('static', filename='images/'+post.poster.profile_pic)}}" class="profile-img"
+              alt="img error">
+          </div>
+
+
+          <div class="post-content">
+
+            {%if post.edited == True %}
+            <div class="edited" style="font-family: 'Poppins', sans-serif;"><small>(edited)</small></div>
+
+            {%endif%}
+            <p class="post">
+              <div class="text-post">{{ post.post }}</div>
+              {%if post.img_name != None%}
+              <div class="post-image">
+                <img src="{{url_for('static', filename='images/post/'+post.img_name)}}"  alt="img error">
+              </div>
+              
+              {%endif%}
+            <p>
+
+          </div>
+
+          
+            
+          
+          <div class="likes">
+            <span id="likes-count-{{post.id}}">
+              {{ post.likes|length }}
+            </span>
+            {%if current_user.id in post.likes|map(attribute="user_id")|list%}
+
+            <i class="fas fa-thumbs-up" id="like-button-{{post.id}}" onclick="like({{post.id}})"></i>
+            {%else%}
+            <i class="far fa-thumbs-up" id="like-button-{{post.id}}" onclick="like({{post.id}})"></i>
+
+            {%endif%}
+          </div>
+
+          <div class="comment">
+
+            {% for comment in post.comments %}
+
+            
+
+              <div class="font-family: 'Trispace', sans-serif;"><img
+                src="{{url_for('static', filename='images/'+comment.user.profile_pic)}}" class="profile-img"
+                alt="img error">
+                {{comment.user.user_name}}
+                 </div>
+
+
+
+              <div class="font-family: 'Assistant', sans-serif;">
+                <ul>
+                  <li> {{comment.text}}</li></ul>
+
+               
+              </div>
+
+              <br>
+            
+            {%endfor%}
+            
+          </div>
+          <br>
+          <div class="comment-form">
+
+            <form class="input-group mb-3" method="POST" action="/comment/{{post.id}}">
+              <input type="text" id="text" name="text" class="form-control" placeholder="Comment something!" />
+              <button type="submit" class="btn btn-primary">Comment</button>
+            </form>
+          </div>
+          <br>
+          <div class="time">{{post.date.date()}}</div>
+          <div class="btns">
+
+            {% if post.poster.id == session["user_id"] or current_user.admin == True%}
+            <button type="button" class="btn btn-danger" onClick=" deletePost ( {{ post.id }} )">Remove Post
+
+            </button>
+            <a class="btn btn-primary" href="{{url_for('views.edit_note',id=post.id)}}">Edit</a>
+          </div>
+          {% endif %}
+        </li>
+        {% endfor %}
+    </div>
+    </ul>
+  <!-- </div> -->
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}" />
+
+
+
+{% endblock %}

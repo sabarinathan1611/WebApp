@@ -1,22 +1,14 @@
-// function like(noteId) {
-//     fetch("/like-post", {
-//       method: "POST",
-//       body: JSON.stringify({ noteId: noteId }),
-//     }).then((_res) => {
-//       window.location.href = "/";
-      
-//     });
-//   }
+
   
-  function comment(noteId) {
-    fetch("/comment", {
-      method: "POST",
-      body: JSON.stringify({ noteId: noteId }),
-    }).then((_res) => {
-      window.location.href = "/";
+  // function comment(noteId) {
+  //   fetch("/comment", {
+  //     method: "POST",
+  //     body: JSON.stringify({ noteId: noteId }),
+  //   }).then((_res) => {
+  //     window.location.href = "/";
       
-    });
-  }
+  //   });
+  // }
   
   function like(noteId){
     const likeCount = document.getElementById(`likes-count-${noteId}`);
@@ -27,9 +19,9 @@
     .then((data) => {
       likeCount.innerHTML = data["likes"];
       if (data["liked"] === true) {
-        likeButton.className = "fas fa-thumbs-up";
+        likeButton.src = "static/images/logo/like.svg";
       } else { 
-        likeButton.className = "far fa-thumbs-up";
+        likeButton.src = "static/images/logo/unlike.svg";
       }
     })
     .catch((e) => alert("Could not like post."));
@@ -49,10 +41,10 @@ function img_like(imgId){
       console.log(data["liked"]);
       if (data["liked"] === true) {
         console.log("Like");
-        likeButton.className = "fas fa-thumbs-up";
+        likeButton.src = "static/images/logo/like.svg";
       } else {
         console.log("Like");
-        likeButton.className = "far fa-thumbs-up";
+        likeButton.src = "static/images/logo/unlike.svg";
 
       }
     })
@@ -69,3 +61,36 @@ function img_like(imgId){
       
   //   });
   // }
+
+  document.getElementById('myForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the form from submitting normally
+
+    // Get the input value
+    var name = document.getElementById('myInput').value;
+    
+    // Create the request body
+    var data = {
+      name: name
+    };
+
+    // Send the request to the server
+    fetch('/comment/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    .then(function(response) {
+      // Handle the response from the server
+      if (response.ok) {
+        console.log('Request sent successfully');
+        // Do something with the response, if needed
+      } else {
+        console.log('Request failed');
+      }
+    })
+    .catch(function(error) {
+      console.log('Error:', error);
+    });
+  });
